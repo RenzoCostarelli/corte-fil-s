@@ -1,0 +1,66 @@
+---
+
+---
+
+<div
+  id="loader"
+  class="fixed inset-0 z-100 bg-neutral-900 flex items-end justify-end"
+>
+  <div
+    id="loader-counter"
+    class="font-pt-mono font-bold text-black text-[clamp(8rem,28vw,68rem)] leading-none -mb-15"
+  >
+    0
+  </div>
+</div>
+
+<script>
+  import { gsap, ScrollTrigger } from "../lib/gsap";
+
+  const loader = document.getElementById("loader") as HTMLDivElement;
+  const counter = document.getElementById("loader-counter") as HTMLSpanElement;
+
+  if (sessionStorage.getItem("loaderShown")) {
+    (window as any).__loaderDone = true;
+    loader.remove();
+    window.dispatchEvent(new CustomEvent("loader:done"));
+  } else {
+    sessionStorage.setItem("loaderShown", "1");
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+    document.body.classList.add("overflow-hidden");
+
+    const obj = { value: 0 };
+
+    const updateCounter = () => {
+      counter.textContent = Math.floor(obj.value).toString();
+      gsap.set(counter, { y: -(obj.value / 100) * window.innerHeight * 0.5 });
+    };
+
+    gsap.to(obj, {
+      value: 100,
+      duration: 1,
+      ease: "power1.inOut",
+      onUpdate: updateCounter,
+      onComplete: () => {
+        gsap.to(loader, {
+          yPercent: -100,
+          duration: 0.8,
+          ease: "power3.inOut",
+          delay: 0.2,
+          onComplete: () => {
+            document.body.classList.remove("overflow-hidden");
+            document.body.style.paddingRight = "";
+            (window as any).__loaderDone = true;
+            window.dispatchEvent(new CustomEvent("loader:done"));
+            loader.remove();
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh();
+            });
+          },
+        });
+      },
+    });
+  }
+</script>

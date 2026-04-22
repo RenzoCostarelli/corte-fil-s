@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-akira: var(--font-akira);
+  --font-univers-ex: var(--font-univers-ex);
+  --font-univers-ex-obl: var(--font-univers-ex-obl);
+}
+
+body {
+  background-color: var(--color-neutral-900);
+}

@@ -1,0 +1,135 @@
+---
+import { categories, portfolio } from "../../data";
+import Layout from "../../layouts/Layout.astro";
+import ProjectCard from "../../components/ui/ProjectCard.astro";
+import SectionTitle from "../../components/ui/SectionTitle.astro";
+---
+
+<Layout>
+  <section class="min-h-svh space-y-12 py-24" data-portfolio-section>
+    <script>
+      import { gsap, ScrollTrigger } from "../../lib/gsap";
+
+      let categoriesTrigger: ScrollTrigger | null = null;
+      const cardTriggers = new Map<HTMLElement, ScrollTrigger>();
+
+      document.addEventListener("astro:page-load", () => {
+        const section = document.querySelector("[data-portfolio-section]");
+        if (!section) return;
+
+        const filterButtons =
+          gsap.utils.toArray<HTMLElement>("[data-filter-btn]", section);
+        const projectCards =
+          gsap.utils.toArray<HTMLElement>("[data-project-card]", section);
+
+        const categoriesTl = gsap
+          .timeline({ paused: true })
+          .from(filterButtons, {
+            opacity: 0,
+            y: -20,
+            stagger: 0.1,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+
+        categoriesTrigger = ScrollTrigger.create({
+          trigger: "[data-categories]",
+          start: "top 75%",
+          end: "top center",
+          animation: categoriesTl,
+          scrub: true,
+        });
+
+        function createCardTrigger(card: HTMLElement) {
+          cardTriggers.get(card)?.kill();
+          gsap.set(card, { opacity: 0, y: 60 });
+          const tl = gsap.timeline({ paused: true }).to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power3.out",
+          });
+          const trigger = ScrollTrigger.create({
+            trigger: card,
+            start: "top 80%",
+            animation: tl,
+            toggleActions: "play none none none",
+            once: true,
+          });
+          cardTriggers.set(card, trigger);
+        }
+
+        // Category filter logic
+        function applyFilter(filter: string) {
+          filterButtons.forEach((btn: HTMLElement) => {
+            const isActive = btn.dataset.filterBtn === filter;
+            btn.classList.toggle("text-neutral-50", isActive);
+            btn.classList.toggle("text-neutral-400", !isActive);
+          });
+
+          projectCards.forEach((card: HTMLElement) => {
+            const visible =
+              filter === "Todos" || card.dataset.categoryItem === filter;
+            if (!visible) {
+              cardTriggers.get(card)?.kill();
+              cardTriggers.delete(card);
+              card.style.display = "none";
+            } else {
+              card.style.display = "";
+            }
+          });
+
+          ScrollTrigger.refresh();
+
+          projectCards
+            .filter((c: HTMLElement) => c.style.display !== "none")
+            .forEach(createCardTrigger);
+
+          ScrollTrigger.refresh();
+        }
+
+        filterButtons.forEach((btn: HTMLElement) => {
+          btn.addEventListener("click", () => {
+            applyFilter(btn.dataset.filterBtn ?? "Todos");
+          });
+        });
+
+        applyFilter("Todos");
+      });
+
+      document.addEventListener("astro:before-swap", () => {
+        categoriesTrigger?.kill();
+        categoriesTrigger = null;
+        cardTriggers.forEach((t) => t.kill());
+        cardTriggers.clear();
+      });
+    </script>
+    <div class="container mx-auto">
+      <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
+      <div
+        class="flex items-center justify-end gap-6 pt-8 px-2"
+        data-categories
+      >
+        <button
+          class="text-neutral-50 hover:text-neutral-50 text-xl font-univers-ex tracking-wider"
+          data-filter-btn="Todos"
+        >
+          Todos
+        </button>
+        {
+          categories.map((category) => (
+            <button
+              class="text-neutral-400 hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty"
+              data-filter-btn={category.name}
+            >
+              {category.name}
+            </button>
+          ))
+        }
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-8 py-8">
+        {portfolio.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </div>
+  </section>
+</Layout>

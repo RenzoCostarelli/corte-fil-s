@@ -1,0 +1,52 @@
+<section class="container mx-auto py-24 space-y-8">
+  <p
+    class="text-neutral-500 text-5xl font-univers-ex tracking-wide text-pretty"
+    data-about-paragraph
+  >
+    Somos una productora audiovisual con enfoque cinematográfico, especializada
+    en transformar ideas en piezas visuales con carácter, estética y emoción.
+  </p>
+  <p
+    class="text-neutral-500 text-5xl text-right font-univers-ex tracking-wide text-pretty"
+    data-about-paragraph
+  >
+    Trabajamos con marcas, artistas e instituciones que buscan diferenciarse y
+    generar <span class="font-univers-ex-obl">impacto real.</span>
+  </p>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, SplitText } from "../lib/gsap";
+
+  let triggers: ScrollTrigger[] = [];
+
+  document.addEventListener("astro:page-load", () => {
+    const paragraphs = document.querySelectorAll<HTMLElement>("[data-about-paragraph]");
+
+    paragraphs.forEach((paragraph) => {
+      const split = new SplitText(paragraph, { type: "words" });
+
+      const tl = gsap.timeline({ paused: true }).to(split.words, {
+        opacity: 1,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: "none",
+      });
+
+      gsap.set(split.words, { opacity: 0.15 });
+
+      triggers.push(ScrollTrigger.create({
+        trigger: paragraph,
+        start: "top 80%",
+        end: "bottom 40%",
+        scrub: true,
+        animation: tl,
+      }));
+    });
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    triggers.forEach((t) => t.kill());
+    triggers = [];
+  });
+</script>

@@ -1,0 +1,70 @@
+<header
+  class="text-neutral-700 flex flex-col h-full justify-between gap-12 w-full px-4"
+  data-hero
+>
+  <div class="flex-1 place-content-center">
+    <div class="w-180 2xl:w-280 mx-auto aspect-video" data-video>
+      <video
+        src="https://res.cloudinary.com/dkgnaegp9/video/upload/q_auto/f_auto/v1776356531/WhatsApp_Video_2026-04-07_at_14.10.14_e68hvc.mp4"
+        class="w-full h-full object-cover shadow-md"
+        autoplay
+        loop
+        muted
+        playsinline
+      >
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+  <div class="text-9xl font-bold leading-none text-right w-full" data-year>
+    <div class="font-akira relative w-max ml-auto">
+      <span
+        class="[text-stroke:2px_white] [-webkit-text-stroke:2px_#404040] text-transparent inline-block"
+        >ROS -</span
+      > '26
+    </div>
+  </div>
+</header>
+<script>
+  import { gsap } from "../lib/gsap";
+
+  const hero = document.querySelector("[data-hero]") as HTMLElement | null;
+  const topbar = document.querySelector("[data-topbar]") as HTMLElement | null;
+  const year = hero?.querySelector("[data-year]") as HTMLElement | null;
+  const video = hero?.querySelector("[data-video]") as HTMLElement | null;
+  function animateHeroIn() {
+    if (!year) return;
+    gsap.to(year, { y: 0, duration: 1.25, ease: "power2.out" });
+    gsap.to(video, {
+      opacity: 1,
+      duration: 1.25,
+      ease: "power2.out",
+      delay: 0.5,
+    });
+  }
+
+  if ((window as any).__loaderDone) {
+    // Navigating back to home — animate in immediately, no loader
+    animateHeroIn();
+  } else {
+    if (year && video) {
+      gsap.set(video, { opacity: 0 });
+      gsap.set(year, { y: 200 });
+    }
+    window.addEventListener("loader:done", animateHeroIn, { once: true });
+  }
+</script>
+
+<script>
+  function updateHeroHeight() {
+    const hero = document.querySelector("[data-hero]") as HTMLElement | null;
+    const topbar = document.querySelector(
+      "[data-topbar]",
+    ) as HTMLElement | null;
+    if (!hero || !topbar) return;
+    hero.style.height = `calc(100svh - ${topbar.offsetHeight}px)`;
+  }
+
+  updateHeroHeight();
+  window.addEventListener("resize", updateHeroHeight);
+</script>

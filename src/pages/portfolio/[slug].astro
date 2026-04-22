@@ -1,0 +1,101 @@
+---
+import { portfolio } from "../../data";
+import BackButton from "../../components/ui/BackButton.astro";
+import ArrowIcon from "../../components/ui/icons/ArrowIcon.astro";
+import Layout from "../../layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return portfolio.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+
+const otherProjects = portfolio
+  .filter((p) => p.slug !== project.slug && p.category === project.category)
+  .slice(0, 3);
+
+const otherSlugs = new Set([project.slug, ...otherProjects.map((p) => p.slug)]);
+
+const fallbackProjects = portfolio
+  .filter((p) => !otherSlugs.has(p.slug))
+  .slice(0, 3 - otherProjects.length);
+
+const relatedProjects = [...otherProjects, ...fallbackProjects];
+---
+
+<Layout>
+  <div class="pb-12">
+    <div class="container mx-auto">
+      <BackButton href="/portfolio" />
+    </div>
+    <div class="container mx-auto">
+      <article class="flex justify-between gap-24 py-12">
+        <div
+          class="bg-neutral-800 h-128 w-lg aspect-square flex items-center justify-center text-white text-xl font-univers-ex tracking-wide shrink-0"
+          style={`view-transition-name: portfolio-hero-${project.slug}`}
+        >
+          {project.name}
+        </div>
+        <div class="text-neutral-100 py-4 space-y-6">
+          <div class="text-sm font-univers-ex text-neutral-400">
+            {project.year} | {project.category} | {project.roles.join(", ")}
+          </div>
+          <h1 class="text-6xl font-akira">{project.name}</h1>
+          <p class="font-univers-ex text-2xl text-pretty">
+            {project.description}
+          </p>
+          <p class="font-univers-ex text-2xl text-pretty">
+            {project.longDescription}
+          </p>
+        </div>
+      </article>
+    </div>
+    <div class="w-full">
+      <div
+        class="bg-neutral-800 h-128 mx-auto max-w-600 flex items-center justify-center text-white text-xl font-univers-ex tracking-wide"
+      >
+        {project.name}
+      </div>
+    </div>
+    <div class="container mx-auto">
+      <p class="font-univers-ex text-2xl text-pretty text-neutral-100 py-8">
+        {project.longDescription}
+      </p>
+    </div>
+    <div class="container mx-auto">
+      <section class="py-12">
+        <h2 class="text-6xl font-akira text-neutral-100">Otros Proyectos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
+          {
+            relatedProjects.map((related) => (
+              <a href={`/portfolio/${related.slug}`}>
+                <div
+                  class="bg-neutral-800 h-64 flex items-center justify-center text-white font-univers-ex tracking-wide hover:bg-neutral-700 transition-colors"
+                  style={`view-transition-name: portfolio-hero-${related.slug}`}
+                >
+                  {related.name}
+                </div>
+              </a>
+            ))
+          }
+        </div>
+        <div>
+          <a
+            href="/portfolio"
+            class="flex ml-auto w-max items-center text-neutral-500 font-akira group hover:text-neutral-100 transition-colors"
+          >
+            VER TODOS LOS PROYECTOS
+            <div
+              class="w-8 group-hover:translate-x-2 transition-transform duration-500 ease-in-out"
+            >
+              <ArrowIcon />
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>

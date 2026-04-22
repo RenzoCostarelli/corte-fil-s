@@ -1,0 +1,29 @@
+---
+import type { PortfolioItem } from "../../data";
+
+interface Props {
+  project: PortfolioItem;
+  from?: string;
+}
+
+const { project, from } = Astro.props;
+const href = from
+  ? `/portfolio/${project.slug}?from=${encodeURIComponent(from)}`
+  : `/portfolio/${project.slug}`;
+---
+
+<a
+  href={href}
+  data-project-card
+  data-category-item={project.category}
+>
+  <div
+    class="bg-neutral-800 h-128 flex flex-col items-center justify-center text-white gap-2 hover:bg-neutral-700 transition-colors"
+    style={`view-transition-name: portfolio-hero-${project.slug}`}
+  >
+    <span class="text-xl font-univers-ex tracking-wide">{project.name}</span>
+    <span class="text-sm font-univers-ex text-neutral-400 tracking-wider uppercase">
+      {project.category}
+    </span>
+  </div>
+</a>

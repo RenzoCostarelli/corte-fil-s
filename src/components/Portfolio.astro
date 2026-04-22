@@ -1,0 +1,90 @@
+---
+import { categories, portfolio } from "../data";
+import ArrowIcon from "./ui/icons/ArrowIcon.astro";
+import ProjectCard from "./ui/ProjectCard.astro";
+import SectionTitle from "./ui/SectionTitle.astro";
+
+const projects = portfolio.slice(0, 4);
+---
+
+<section class="min-h-svh space-y-12" data-portfolio-home>
+  <script>
+    import { gsap, ScrollTrigger } from "../lib/gsap";
+
+    let triggers: ScrollTrigger[] = [];
+
+    document.addEventListener("astro:page-load", () => {
+      const section = document.querySelector("[data-portfolio-home]");
+      if (!section) return;
+
+      const categoryButtons = gsap.utils.toArray<HTMLElement>("[data-category]", section);
+      const projectCards = gsap.utils.toArray<HTMLElement>("[data-project-card]", section);
+
+      const categoriesTl = gsap.timeline({ paused: true }).from(categoryButtons, {
+        opacity: 0,
+        y: -20,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+
+      triggers.push(ScrollTrigger.create({
+        trigger: "[data-categories]",
+        start: "top 75%",
+        end: "top center",
+        animation: categoriesTl,
+        scrub: true,
+      }));
+
+      projectCards.forEach((card: HTMLElement) => {
+        const tl = gsap.timeline({ paused: true }).from(card, {
+          opacity: 0,
+          y: 60,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.5,
+        });
+
+        triggers.push(ScrollTrigger.create({
+          trigger: card,
+          start: "top 75%",
+          animation: tl,
+          scrub: true,
+        }));
+      });
+    });
+
+    document.addEventListener("astro:before-swap", () => {
+      triggers.forEach((t) => t.kill());
+      triggers = [];
+    });
+  </script>
+  <div class="container mx-auto">
+    <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
+    <div class="flex items-center justify-end gap-6 pt-8 px-2" data-categories>
+      {
+        categories.map((category) => (
+          <button
+            class="text-neutral-400 hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty"
+            data-category
+          >
+            {category.name}
+          </button>
+        ))
+      }
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-8 py-8" data-projects>
+      {projects.map((project) => <ProjectCard project={project} from="/" />)}
+    </div>
+    <div class="w-full py-2 text-right font-univers-ex">
+      <a
+        href="#"
+        class="w-max flex items-center justify-self-end group transition-colors duration-500 text-neutral-500 hover:text-neutral-50"
+        >Ver todos los proyectos <span
+          class="w-6 inline-block group-hover:translate-x-2 transition-transform duration-500 ease-in-out"
+          ><ArrowIcon /></span
+        ></a
+      >
+    </div>
+  </div>
+</section>

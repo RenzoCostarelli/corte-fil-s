@@ -1,0 +1,102 @@
+---
+import { categories } from "../data";
+
+const doubled = [...categories, ...categories];
+---
+
+<div class="w-full py-24 my-12 overflow-hidden select-none" data-marquee>
+  <div data-rotate>
+    <div data-track class="flex w-max whitespace-nowrap will-change-transform">
+      {
+        doubled.map((category, index) => (
+          <div
+            data-item
+            class:list={[
+              "shrink-0 mr-8 text-8xl font-akira odd:text-transparent even:text-neutral-100 [text-stroke:2px_white] [-webkit-text-stroke:2px_white]",
+            ]}
+          >
+            {category.name}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  import { gsap, ScrollTrigger } from "../lib/gsap";
+
+  let destroy: (() => void) | null = null;
+
+  function initMarquee(): (() => void) | null {
+    const root = document.querySelector<HTMLElement>("[data-marquee]");
+
+    const rotateEl = root?.querySelector<HTMLElement>("[data-rotate]");
+
+    const track = root?.querySelector<HTMLElement>("[data-track]");
+
+    if (!root || !rotateEl || !track) return null;
+
+    const items = Array.from(
+      track.querySelectorAll<HTMLElement>("[data-item]"),
+    );
+
+    const half = items.length / 2;
+
+    const width = items.slice(0, half).reduce((total, item) => {
+      const style = getComputedStyle(item);
+
+      return total + item.offsetWidth + parseFloat(style.marginRight);
+    }, 0);
+
+    const loop = gsap.to(track, {
+      x: -width,
+      duration: 50,
+      ease: "none",
+      repeat: -1,
+      modifiers: {
+        x: (x: string) => `${parseFloat(x) % -width}px`,
+      },
+    });
+
+    gsap.set(rotateEl, {
+      rotate: 1.8,
+    });
+
+    const tl = gsap.timeline({ paused: true }).to(rotateEl, {
+      rotate: -1.8,
+    });
+
+    const trigger = ScrollTrigger.create({
+      trigger: root,
+      start: "top center",
+      end: "bottom top",
+      animation: tl,
+      scrub: true,
+    });
+
+    return () => {
+      loop.kill();
+      trigger.kill();
+    };
+  }
+
+  async function boot(): Promise<void> {
+    destroy?.();
+
+    if ("fonts" in document) {
+      await document.fonts.ready;
+    }
+
+    destroy = initMarquee();
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    void boot();
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    destroy?.();
+    destroy = null;
+  });
+</script>

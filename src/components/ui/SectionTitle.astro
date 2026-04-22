@@ -1,0 +1,48 @@
+---
+interface Props {
+  title: string;
+  class?: string;
+}
+
+const { title, class: className } = Astro.props;
+---
+
+<h2 class:list={["font-akira text-8xl", className]} data-section-title>
+  {title}
+</h2>
+
+<script>
+  import { gsap, ScrollTrigger } from "../../lib/gsap";
+
+  let triggers: ScrollTrigger[] = [];
+
+  document.addEventListener("astro:page-load", () => {
+    const titles = document.querySelectorAll<HTMLElement>(
+      "[data-section-title]",
+    );
+
+    titles.forEach((title) => {
+      gsap.set(title, { y: 40, opacity: 0 });
+      const tl = gsap.timeline({ paused: true }).to(title, {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+      });
+
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: title,
+          start: "-=50% 85%",
+          end: "bottom 85%",
+          animation: tl,
+          scrub: true,
+        }),
+      );
+    });
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    triggers.forEach((t) => t.kill());
+    triggers = [];
+  });
+</script>

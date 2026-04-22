@@ -1,0 +1,37 @@
+---
+import Navbar from "./Navbar.astro";
+import Logo from "./ui/Logo.astro";
+---
+
+<div
+  class="w-full flex items-center justify-between p-4 z-9999 relative"
+  data-topbar
+>
+  <a href="/" class="w-52 text-white cursor-pointer">
+    <Logo />
+  </a>
+  <Navbar />
+</div>
+<script>
+  import { gsap } from "../lib/gsap";
+  const topbar = document.querySelector("[data-topbar]") as HTMLElement | null;
+
+  if (!(window as any).__loaderDone) {
+    if (document.getElementById("loader")) {
+      if (topbar) gsap.set(topbar, { yPercent: -500, opacity: 0 });
+      window.addEventListener(
+        "loader:done",
+        () => {
+          if (!topbar) return;
+          gsap.to(topbar, {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power4.out",
+          });
+        },
+        { once: true },
+      );
+    }
+  }
+</script>

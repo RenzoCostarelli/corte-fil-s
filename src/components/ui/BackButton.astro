@@ -1,0 +1,31 @@
+---
+import ArrowIcon from "./icons/ArrowIcon.astro";
+
+interface Props {
+  href?: string;
+}
+
+const { href = "/" } = Astro.props;
+---
+
+<a
+  href={href}
+  data-back-btn
+  class="flex w-max items-center text-neutral-500 font-akira group hover:text-neutral-100 transition-colors"
+>
+  <div
+    class="w-8 rotate-180 group-hover:-translate-x-2 transition-transform duration-500 ease-in-out"
+  >
+    <ArrowIcon />
+  </div>
+  VOLVER
+</a>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const btn = document.querySelector<HTMLAnchorElement>("[data-back-btn]");
+    if (!btn) return;
+    const from = new URLSearchParams(window.location.search).get("from");
+    if (from) btn.href = from;
+  });
+</script>

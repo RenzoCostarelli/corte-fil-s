@@ -1,0 +1,52 @@
+---
+import { icons, navItems, social } from "../data";
+import Instagram from "./ui/icons/Instagram.astro";
+import WhatsApp from "./ui/icons/WhatsApp.astro";
+import Email from "./ui/icons/Email.astro";
+import Logo from "./ui/Logo.astro";
+import SectionTitle from "./ui/SectionTitle.astro";
+---
+
+<footer class="py-12">
+  <div class="container mx-auto h-full">
+    <div class="flex flex-col justify-between gap-24 h-full">
+      <div class="space-y-4">
+        <SectionTitle title="Hablemos" class="text-neutral-100" />
+        <div>
+          {
+            social.map((item) => {
+              const Icon = icons[item.icon as keyof typeof icons];
+              return (
+                <a
+                  href={item.url}
+                  class="text-neutral-100 mr-4 w-18 inline-block"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.name}
+                >
+                  <Icon />
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+      <div class="flex items-center flex-col gap-6">
+        <div class="text-white w-32">
+          <Logo />
+        </div>
+        <nav>
+          <ul class="text-white flex gap-4 items-center justify-end">
+            {
+              navItems.map((item) => (
+                <li>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>
