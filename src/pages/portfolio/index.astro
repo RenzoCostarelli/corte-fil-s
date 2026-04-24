@@ -17,10 +17,14 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
         const section = document.querySelector("[data-portfolio-section]");
         if (!section) return;
 
-        const filterButtons =
-          gsap.utils.toArray<HTMLElement>("[data-filter-btn]", section);
-        const projectCards =
-          gsap.utils.toArray<HTMLElement>("[data-project-card]", section);
+        const filterButtons = gsap.utils.toArray<HTMLElement>(
+          "[data-filter-btn]",
+          section,
+        );
+        const projectCards = gsap.utils.toArray<HTMLElement>(
+          "[data-project-card]",
+          section,
+        );
 
         const categoriesTl = gsap
           .timeline({ paused: true })
@@ -104,7 +108,7 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
         cardTriggers.clear();
       });
     </script>
-    <div class="container mx-auto">
+    <div class="container px-4 mx-auto">
       <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
       <div
         class="flex items-center justify-end gap-6 pt-8 px-2"

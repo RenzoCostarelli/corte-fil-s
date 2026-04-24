@@ -1,4 +1,4 @@
-<section class="container mx-auto py-24 space-y-8">
+<section class="container px-4 mx-auto py-24 space-y-8">
   <p
     class="text-neutral-500 text-5xl font-univers-ex tracking-wide text-pretty"
     data-about-paragraph
@@ -21,7 +21,9 @@
   let triggers: ScrollTrigger[] = [];
 
   document.addEventListener("astro:page-load", () => {
-    const paragraphs = document.querySelectorAll<HTMLElement>("[data-about-paragraph]");
+    const paragraphs = document.querySelectorAll<HTMLElement>(
+      "[data-about-paragraph]",
+    );
 
     paragraphs.forEach((paragraph) => {
       const split = new SplitText(paragraph, { type: "words" });
@@ -35,13 +37,15 @@
 
       gsap.set(split.words, { opacity: 0.15 });
 
-      triggers.push(ScrollTrigger.create({
-        trigger: paragraph,
-        start: "top 80%",
-        end: "bottom 40%",
-        scrub: true,
-        animation: tl,
-      }));
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: paragraph,
+          start: "top 80%",
+          end: "bottom 40%",
+          scrub: true,
+          animation: tl,
+        }),
+      );
     });
   });
 

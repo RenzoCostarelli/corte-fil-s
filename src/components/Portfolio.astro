@@ -17,24 +17,34 @@ const projects = portfolio.slice(0, 4);
       const section = document.querySelector("[data-portfolio-home]");
       if (!section) return;
 
-      const categoryButtons = gsap.utils.toArray<HTMLElement>("[data-category]", section);
-      const projectCards = gsap.utils.toArray<HTMLElement>("[data-project-card]", section);
+      const categoryButtons = gsap.utils.toArray<HTMLElement>(
+        "[data-category]",
+        section,
+      );
+      const projectCards = gsap.utils.toArray<HTMLElement>(
+        "[data-project-card]",
+        section,
+      );
 
-      const categoriesTl = gsap.timeline({ paused: true }).from(categoryButtons, {
-        opacity: 0,
-        y: -20,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: "power2.out",
-      });
+      const categoriesTl = gsap
+        .timeline({ paused: true })
+        .from(categoryButtons, {
+          opacity: 0,
+          y: -20,
+          stagger: 0.1,
+          duration: 0.6,
+          ease: "power2.out",
+        });
 
-      triggers.push(ScrollTrigger.create({
-        trigger: "[data-categories]",
-        start: "top 75%",
-        end: "top center",
-        animation: categoriesTl,
-        scrub: true,
-      }));
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: "[data-categories]",
+          start: "top 75%",
+          end: "top center",
+          animation: categoriesTl,
+          scrub: true,
+        }),
+      );
 
       projectCards.forEach((card: HTMLElement) => {
         const tl = gsap.timeline({ paused: true }).from(card, {
@@ -45,12 +55,14 @@ const projects = portfolio.slice(0, 4);
           stagger: 0.5,
         });
 
-        triggers.push(ScrollTrigger.create({
-          trigger: card,
-          start: "top 75%",
-          animation: tl,
-          scrub: true,
-        }));
+        triggers.push(
+          ScrollTrigger.create({
+            trigger: card,
+            start: "top 75%",
+            animation: tl,
+            scrub: true,
+          }),
+        );
       });
     });
 
@@ -59,7 +71,7 @@ const projects = portfolio.slice(0, 4);
       triggers = [];
     });
   </script>
-  <div class="container mx-auto">
+  <div class="container px-4 mx-auto">
     <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
     <div class="flex items-center justify-end gap-6 pt-8 px-2" data-categories>
       {
