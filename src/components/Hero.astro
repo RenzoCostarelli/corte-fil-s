@@ -39,7 +39,7 @@
   const video = hero?.querySelector("[data-video]") as HTMLElement | null;
   const city = hero?.querySelector("[data-city]") as HTMLElement | null;
   function animateHeroIn() {
-    // if (!year || !city) return;
+    if (!topbar || !video) return;
 
     // gsap.to(city, { x: 0, duration: 1.25, ease: "power2.out" });
     // gsap.to(year, { x: 0, duration: 1.25, ease: "power2.out" });
@@ -48,12 +48,22 @@
       .to(video, {
         opacity: 1,
         y: 0,
-        scale: 1,
         duration: 1.25,
         ease: "power2.out",
         delay: 0.5,
       })
-      .to(video, {});
+      .to(
+        topbar,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "<0.5",
+      )
+      .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=0.85");
+
     videoTl.play();
   }
 

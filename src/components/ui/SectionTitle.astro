@@ -7,7 +7,7 @@ interface Props {
 const { title, class: className } = Astro.props;
 ---
 
-<h2 class:list={["font-akira text-8xl", className]} data-section-title>
+<h2 class:list={["font-akira text-8xl blur-md", className]} data-section-title>
   {title}
 </h2>
 
@@ -27,6 +27,7 @@ const { title, class: className } = Astro.props;
         y: 0,
         opacity: 1,
         duration: 0.8,
+        filter: "blur(0px)",
       });
 
       triggers.push(
