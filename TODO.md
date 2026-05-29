@@ -1,0 +1,3 @@
+- [] Agregar galeria de imagenes en portfolio item page
+- [] Quienes somos en la home con fotos de los integrantes
+- [] Bug scroll cuando se pasa el mouse sobre el reel de youtube

@@ -1,13 +1,16 @@
-<section class="container px-4 mx-auto py-24 space-y-8">
+<section
+  class="container px-4 mx-auto pt-40 py-24 space-y-8 h-svh flex flex-col justify-between"
+  data-container
+>
   <p
-    class="text-neutral-500 text-5xl font-univers-ex tracking-wide text-pretty"
+    class="text-neutral-500 text-4xl font-univers-ex tracking-wide text-pretty w-3/4"
     data-about-paragraph
   >
     Somos una productora audiovisual con enfoque cinematográfico, especializada
     en transformar ideas en piezas visuales con carácter, estética y emoción.
   </p>
   <p
-    class="text-neutral-500 text-5xl text-right font-univers-ex tracking-wide text-pretty"
+    class="text-neutral-500 text-4xl text-right font-univers-ex tracking-wide text-pretty w-3/4 ml-auto"
     data-about-paragraph
   >
     Trabajamos con marcas, artistas e instituciones que buscan diferenciarse y
@@ -20,6 +23,10 @@
 
   let triggers: ScrollTrigger[] = [];
 
+  // const container = document.querySelector(
+  //   "[data-container]",
+  // ) as HTMLElement | null;
+  // if (!container) return;
   document.addEventListener("astro:page-load", () => {
     const paragraphs = document.querySelectorAll<HTMLElement>(
       "[data-about-paragraph]",
@@ -35,7 +42,7 @@
         ease: "none",
       });
 
-      gsap.set(split.words, { opacity: 0.15 });
+      // gsap.set(split.words, { opacity: 0.15 });
 
       triggers.push(
         ScrollTrigger.create({
@@ -44,6 +51,7 @@
           end: "bottom 40%",
           scrub: true,
           animation: tl,
+          // markers: true,
         }),
       );
     });

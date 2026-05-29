@@ -1,9 +1,22 @@
-<header
-  class="text-neutral-700 flex flex-col h-full justify-between gap-12 w-full px-4"
-  data-hero
->
-  <div class="flex-1 place-content-center">
-    <div class="h-[60vh] mx-auto aspect-video" data-video>
+<header class="text-neutral-700 gap-12 w-full" data-hero>
+  <!-- <div class="fixed h-full w-full inset-0 z-999 flex items-end">
+    <div class="text-9xl font-bold leading-none text-right w-full">
+      <div
+        class="font-akira relative w-full flex justify-between overflow-hidden"
+      >
+        <span
+          class="[text-stroke:2px_white] [-webkit-text-stroke:2px_#404040] -translate-x-[100%] text-transparent inline-block pl-4"
+          data-city>ROS</span
+        >
+        <span class="translate-x-[100%] pr-4" data-year>26</span>
+      </div>
+    </div>
+  </div> -->
+  <div class="px-4">
+    <div
+      class="h-[100svh] mx-auto w-full scale-75 translate-y-[50%]"
+      data-video
+    >
       <video
         src="https://res.cloudinary.com/dkgnaegp9/video/upload/q_auto/f_auto/v1776356531/WhatsApp_Video_2026-04-07_at_14.10.14_e68hvc.mp4"
         class="w-full h-full object-cover shadow-md"
@@ -16,15 +29,6 @@
       </video>
     </div>
   </div>
-  <div class="text-9xl font-bold leading-none text-right" data-year>
-    <div class="font-akira relative w-full flex justify-between">
-      <span
-        class="[text-stroke:2px_white] [-webkit-text-stroke:2px_#404040] text-transparent inline-block"
-        >ROS</span
-      >
-      <span>26</span>
-    </div>
-  </div>
 </header>
 <script>
   import { gsap } from "../lib/gsap";
@@ -33,15 +37,24 @@
   const topbar = document.querySelector("[data-topbar]") as HTMLElement | null;
   const year = hero?.querySelector("[data-year]") as HTMLElement | null;
   const video = hero?.querySelector("[data-video]") as HTMLElement | null;
+  const city = hero?.querySelector("[data-city]") as HTMLElement | null;
   function animateHeroIn() {
-    if (!year) return;
-    gsap.to(year, { y: 0, duration: 1.25, ease: "power2.out" });
-    gsap.to(video, {
-      opacity: 1,
-      duration: 1.25,
-      ease: "power2.out",
-      delay: 0.5,
-    });
+    // if (!year || !city) return;
+
+    // gsap.to(city, { x: 0, duration: 1.25, ease: "power2.out" });
+    // gsap.to(year, { x: 0, duration: 1.25, ease: "power2.out" });
+    const videoTl = gsap
+      .timeline({ paused: true })
+      .to(video, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.25,
+        ease: "power2.out",
+        delay: 0.5,
+      })
+      .to(video, {});
+    videoTl.play();
   }
 
   if ((window as any).__loaderDone) {
