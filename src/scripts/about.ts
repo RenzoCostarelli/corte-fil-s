@@ -13,8 +13,7 @@ class TrailImage {
   }
   isActive() {
     return (
-      gsap.isTweening(this.el) ||
-      parseFloat(this.el.style.opacity || "0") > 0
+      gsap.isTweening(this.el) || parseFloat(this.el.style.opacity || "0") > 0
     );
   }
 }
@@ -90,10 +89,11 @@ class ImageTrail {
       .timeline()
       .set(el, {
         opacity: 1,
-        scale: 1,
+        scale: 0.2,
         zIndex: this.zIndex,
         x: this.cached.x - hw,
         y: this.cached.y - hh,
+        yPercent: 0,
       })
       // Slide to real cursor position
       .to(
@@ -103,13 +103,22 @@ class ImageTrail {
           ease: "expo.out",
           x: this.mouse.x - hw,
           y: this.mouse.y - hh,
+          scale: 1,
         },
         0,
       )
       // Fade out
-      .to(el, { duration: 1, ease: "power1.out", opacity: 0 }, 0.4)
-      // Shrink while fading
-      .to(el, { duration: 1, ease: "power3.out", scale: 0.2 }, 0.4);
+      .to(
+        el,
+        {
+          duration: 1,
+          ease: "power1.out",
+          opacity: 0,
+          scale: 0.75,
+          yPercent: 50,
+        },
+        0.76,
+      );
   }
 
   destroy() {

@@ -1,4 +1,4 @@
 - [x] Agregar galeria de imagenes en portfolio item page
+- [x] Cursor custom
 - [] Responsive, texto
 - [] Clampear tamaño de tarjetas y textos
-- [] Cursor custom

@@ -7,13 +7,13 @@ const thumbnails = portfolio
 
 // Cycle through thumbnails to fill 6 trail image slots
 const trailImages = Array.from(
-  { length: 6 },
+  { length: 12 },
   (_, i) => thumbnails[i % thumbnails.length],
 ).filter(Boolean);
 ---
 
 <section
-  class="container px-4 mx-auto h-svh flex items-center relative overflow-hidden"
+  class="container px-4 mx-auto h-svh flex items-center relative"
   data-container
   data-about-section
 >
@@ -28,7 +28,7 @@ const trailImages = Array.from(
           loading="eager"
           decoding="async"
           class="absolute object-cover select-none will-change-transform"
-          style="width:140px;height:180px;opacity:0;pointer-events:none;"
+          style="width:140px;height:180px;opacity:0;pointer-events:none;tranform:scale(0.1);"
         />
       ))
     }
