@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
 const GRID_SIZE = 75;
-const MOUSE_RADIUS = 0.25;
+const MOUSE_RADIUS = 0.05;
 const STRENGTH = 0.1;
 const RELAXATION = 0.925;
 const DISPLACEMENT = 0.015;
-const ABERRATION = 0.15;
+const ABERRATION = 0.55;
 
 const hero = document.querySelector("[data-hero]") as HTMLElement;
 const video = hero.querySelector("[data-hero-video]") as HTMLVideoElement;
