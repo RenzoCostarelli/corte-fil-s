@@ -1,64 +1,48 @@
+---
+import { portfolio } from "../data/portfolio";
+
+const thumbnails = portfolio
+  .filter((p) => p.thumbnail)
+  .map((p) => p.thumbnail as string);
+
+// Cycle through thumbnails to fill 6 trail image slots
+const trailImages = Array.from(
+  { length: 6 },
+  (_, i) => thumbnails[i % thumbnails.length],
+).filter(Boolean);
+---
+
 <section
-  class="container px-4 mx-auto pt-40 py-24 space-y-8 h-svh flex flex-col justify-between"
+  class="container px-4 mx-auto h-svh flex items-center relative overflow-hidden"
   data-container
+  data-about-section
 >
+  <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+    {
+      trailImages.map((src) => (
+        <img
+          data-trail-img
+          src={src}
+          alt=""
+          draggable="false"
+          loading="eager"
+          decoding="async"
+          class="absolute object-cover select-none will-change-transform"
+          style="width:220px;height:140px;opacity:0;pointer-events:none;"
+        />
+      ))
+    }
+  </div>
+
   <p
-    class="text-neutral-500 text-4xl font-univers-ex tracking-wide text-pretty w-3/4"
+    class="text-neutral-100 text-5xl font-semibold text-center font-univers-ex leading-tight tracking-wide text-pretty relative z-10"
     data-about-paragraph
   >
     Somos una productora audiovisual con enfoque cinematográfico, especializada
     en transformar ideas en piezas visuales con carácter, estética y emoción.
   </p>
-  <p
-    class="text-neutral-500 text-4xl text-right font-univers-ex tracking-wide text-pretty w-3/4 ml-auto"
-    data-about-paragraph
-  >
-    Trabajamos con marcas, artistas e instituciones que buscan diferenciarse y
-    generar <span class="font-univers-ex-obl">impacto real.</span>
-  </p>
 </section>
 
 <script>
-  import { gsap, ScrollTrigger, SplitText } from "../lib/gsap";
-
-  let triggers: ScrollTrigger[] = [];
-
-  // const container = document.querySelector(
-  //   "[data-container]",
-  // ) as HTMLElement | null;
-  // if (!container) return;
-  document.addEventListener("astro:page-load", () => {
-    const paragraphs = document.querySelectorAll<HTMLElement>(
-      "[data-about-paragraph]",
-    );
-
-    paragraphs.forEach((paragraph) => {
-      const split = new SplitText(paragraph, { type: "words" });
-
-      const tl = gsap.timeline({ paused: true }).to(split.words, {
-        opacity: 1,
-        duration: 0.4,
-        stagger: 0.08,
-        ease: "none",
-      });
-
-      // gsap.set(split.words, { opacity: 0.15 });
-
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: paragraph,
-          start: "top 80%",
-          end: "bottom 40%",
-          scrub: true,
-          animation: tl,
-          // markers: true,
-        }),
-      );
-    });
-  });
-
-  document.addEventListener("astro:before-swap", () => {
-    triggers.forEach((t) => t.kill());
-    triggers = [];
-  });
+  import "../scripts/about";
 </script>

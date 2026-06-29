@@ -19,7 +19,7 @@
     >
       <video
         src="https://res.cloudinary.com/dkgnaegp9/video/upload/q_auto/f_auto/v1776356531/WhatsApp_Video_2026-04-07_at_14.10.14_e68hvc.mp4"
-        class="w-full h-full object-cover shadow-md"
+        class="w-full h-full object-cover shadow-md rounded-md overflow-hidden"
         autoplay
         loop
         muted
@@ -62,7 +62,7 @@
         },
         "<0.5",
       )
-      .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=0.85");
+      .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=1");
 
     videoTl.play();
   }
@@ -77,18 +77,4 @@
     }
     window.addEventListener("loader:done", animateHeroIn, { once: true });
   }
-</script>
-
-<script>
-  function updateHeroHeight() {
-    const hero = document.querySelector("[data-hero]") as HTMLElement | null;
-    const topbar = document.querySelector(
-      "[data-topbar]",
-    ) as HTMLElement | null;
-    if (!hero || !topbar) return;
-    hero.style.height = `calc(100svh - ${topbar.offsetHeight}px)`;
-  }
-
-  updateHeroHeight();
-  window.addEventListener("resize", updateHeroHeight);
 </script>

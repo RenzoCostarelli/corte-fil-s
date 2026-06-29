@@ -1,6 +1,7 @@
 ---
 import type { PortfolioItem } from "../../data";
 import { Image } from "astro:assets";
+import ArrowIcon from "./icons/ArrowIcon.astro";
 
 interface Props {
   project: PortfolioItem;
@@ -13,9 +14,14 @@ const href = from
   : `/portfolio/${project.slug}`;
 ---
 
-<a href={href} data-project-card data-category-item={project.category}>
+<a
+  href={href}
+  data-project-card
+  data-category-item={project.category}
+  class="rounded-sm overflow-hidden"
+>
   <div
-    class="bg-neutral-800 h-128 flex flex-col items-center justify-center text-white gap-2 hover:bg-neutral-700 transition-colors relative"
+    class="bg-neutral-800 h-128 text-white gap-2 relative group overflow-hidden"
     style={`view-transition-name: portfolio-hero-${project.slug}`}
   >
     {
@@ -23,17 +29,32 @@ const href = from
         <img
           src={project.thumbnail}
           alt={project.name}
-          class="w-ful h-full object-cover absolute inset-0"
+          class="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-500"
         />
       )
     }
-    <span class="text-xl font-univers-ex tracking-wide relative"
-      >{project.name}</span
+    <div
+      class="absolute left-3 bottom-3 w-max bg-white/2 backdrop-blur-sm px-3 pb-2 pt-12 max-w-[80%]"
     >
-    <span
-      class="text-sm font-univers-ex text-neutral-400 tracking-wider uppercase relative"
-    >
-      {project.category}
-    </span>
+      {
+        project.client && (
+          <div class="text-xs uppercase font-semibold tracking-wider flex gap-2 items-center">
+            <div class="h-1 w-1 bg-white" />
+            {project.client}
+          </div>
+        )
+      }
+      <div class="text-xl font-akira tracking-wide">{project.name}</div>
+    </div>
+    <div class="absolute bottom-3 right-3">
+      <div
+        class="px-4 py-2 flex items-center gap-1 rounded-full backdrop-blur-sm translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 bg-white/2 group-hover:bg-white/4 transition-all duration-500"
+      >
+        <div class="font-semibold">Ver más</div>
+        <div class="w-8 h-8">
+          <ArrowIcon />
+        </div>
+      </div>
+    </div>
   </div>
 </a>

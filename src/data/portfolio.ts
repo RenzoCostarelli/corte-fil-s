@@ -2,6 +2,7 @@ export interface PortfolioItem {
   slug: string;
   name: string;
   category: string;
+  client?: string;
   year: number;
   thumbnail?: string;
   roles: string[];
@@ -14,6 +15,7 @@ export const portfolio: PortfolioItem[] = [
     slug: "grupo-crriolani",
     name: "Grupo Criolani",
     category: "Institucional",
+    client: "Grupo Criolani",
     year: 2025,
     roles: ["Guión", "Dirección", "Edición"],
     thumbnail:
@@ -25,8 +27,9 @@ export const portfolio: PortfolioItem[] = [
   },
   {
     slug: "plaza-club",
-    name: "Plaza Club - Todos somos fundadores",
+    name: "Todos somos fundadores",
     category: "Institucional",
+    client: "Plaza Club",
     year: 2025,
     roles: ["Dirección de fotografía", "Edición"],
     thumbnail:
@@ -35,71 +38,5 @@ export const portfolio: PortfolioItem[] = [
       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis aliquam.",
     longDescription:
       "Video realizado para comunicación interna del club. Nos encomendaron este video para contarle a los socios del club sobre la construcción de un “kinder” en el predio. La idea del cliente era generar un video emotivo, haciendo hincapié en la historia y los valores del club. Guionado y dirigido por Juan Mangiantini. Baltazar Lamas en cámara.",
-  },
-  {
-    slug: "videoclip-uno",
-    name: "Videoclip Uno",
-    category: "Videoclips",
-    year: 2026,
-    roles: ["Dirección", "Edición", "Color"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae perspiciatis ullam culpa, cumque beatae officiis. Porro vel provident reiciendis aliquam.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla ipsam nam provident reiciendis.",
-  },
-  {
-    slug: "videoclip-dos",
-    name: "Videoclip Dos",
-    category: "Videoclips",
-    year: 2025,
-    roles: ["Dirección", "Producción"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum. Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
-  },
-  {
-    slug: "campana-publicidad-1",
-    name: "Campaña Publicidad 1",
-    category: "Publicidad",
-    year: 2026,
-    roles: ["Dirección", "Edición", "Postproducción", "Color"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis aliquam.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam.",
-  },
-  {
-    slug: "campana-publicidad-2",
-    name: "Campaña Publicidad 2",
-    category: "Publicidad",
-    year: 2025,
-    roles: ["Dirección", "Fotografía", "Edición"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae perspiciatis ullam culpa, cumque beatae officiis. Porro vel.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis. Lorem ipsum dolor sit amet.",
-  },
-  {
-    slug: "proyecto-institucional",
-    name: "Proyecto Institucional",
-    category: "Institucional",
-    year: 2025,
-    roles: ["Dirección", "Edición"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga earum nulla ipsam.",
-  },
-  {
-    slug: "proyecto-corporativo",
-    name: "Proyecto Corporativo",
-    category: "Corporativo",
-    year: 2024,
-    roles: ["Dirección", "Producción", "Edición", "Postproducción"],
-    description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae perspiciatis ullam culpa, cumque beatae officiis. Animi totam facilis necessitatibus nostrum.",
-    longDescription:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla ipsam nam provident reiciendis aliquam.",
   },
 ];
