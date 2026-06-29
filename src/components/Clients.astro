@@ -1,0 +1,115 @@
+---
+import { clients } from "../data";
+import SectionTitle from "./ui/SectionTitle.astro";
+
+const doubled = [...clients, ...clients];
+---
+
+<section class="w-full py-16 overflow-hidden select-none" data-clients-marquee>
+  <SectionTitle
+    title="Trabajamos con marcas, artistas e instituciones que buscan diferenciarse y
+      generar impacto real"
+    class="text-white px-4"
+  />
+
+  <div data-track class="flex w-max will-change-transform py-8">
+    {
+      doubled.map((client) => (
+        <div
+          data-item
+          class="shrink-0 flex items-center justify-center border border-white/20 bg-white/5 rounded mr-5 px-8 py-5 min-w-40 text-xs uppercase tracking-widest text-neutral-400 font-medium"
+        >
+          {client.name}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  import { gsap } from "../lib/gsap";
+
+  let cleanup: (() => void) | null = null;
+
+  function initClientsMarquee(): (() => void) | null {
+    const root = document.querySelector<HTMLElement>("[data-clients-marquee]");
+    const track = root?.querySelector<HTMLElement>("[data-track]");
+
+    if (!root || !track) return null;
+
+    const items = Array.from(
+      track.querySelectorAll<HTMLElement>("[data-item]"),
+    );
+    const half = items.length / 2;
+
+    // Measure the width of one full set using bounding rects for accuracy
+    const startX = items[0].getBoundingClientRect().left;
+    const midX = items[half].getBoundingClientRect().left;
+    const loopWidth = midX - startX;
+
+    const BASE_SPEED = 80; // px/s forward
+    const SCROLL_FACTOR = 0.12;
+    const VELOCITY_LERP = 0.07;
+    const DECAY_RATE = 0.04;
+
+    let x = 0;
+    let velocity = BASE_SPEED;
+    let targetVelocity = BASE_SPEED;
+    let lastScrollY = window.scrollY;
+    let lastScrollTime = performance.now();
+
+    const onScroll = () => {
+      const now = performance.now();
+      const dy = window.scrollY - lastScrollY;
+      const dt = now - lastScrollTime;
+
+      if (dt > 0) {
+        const scrollVelocity = (dy / dt) * 1000; // px/s
+        targetVelocity = BASE_SPEED + scrollVelocity * SCROLL_FACTOR;
+        // Clamp so it doesn't go completely haywire
+        targetVelocity = Math.max(-250, Math.min(450, targetVelocity));
+      }
+
+      lastScrollY = window.scrollY;
+      lastScrollTime = now;
+    };
+
+    const tick = (_time: number, deltaTime: number) => {
+      // Smooth velocity toward target
+      velocity += (targetVelocity - velocity) * VELOCITY_LERP;
+
+      // Decay target back to base speed when not scrolling
+      targetVelocity += (BASE_SPEED - targetVelocity) * DECAY_RATE;
+
+      // Advance position (positive velocity → move left)
+      x -= velocity * (deltaTime / 1000);
+
+      // Wrap x to (-loopWidth, 0] to create a seamless loop in both directions
+      x = x % loopWidth;
+      if (x > 0) x -= loopWidth;
+
+      gsap.set(track, { x });
+    };
+
+    gsap.ticker.add(tick);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      gsap.ticker.remove(tick);
+      window.removeEventListener("scroll", onScroll);
+      gsap.set(track, { x: 0 });
+    };
+  }
+
+  async function boot(): Promise<void> {
+    cleanup?.();
+    if ("fonts" in document) await document.fonts.ready;
+    cleanup = initClientsMarquee();
+  }
+
+  document.addEventListener("astro:page-load", () => void boot());
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

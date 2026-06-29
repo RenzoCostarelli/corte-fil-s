@@ -1,4 +1,7 @@
-<header class="text-neutral-700 gap-12 w-full" data-hero>
+<header
+  class="text-neutral-700 gap-12 w-full relative overflow-hidden"
+  data-hero
+>
   <!-- <div class="fixed h-full w-full inset-0 z-999 flex items-end">
     <div class="text-9xl font-bold leading-none text-right w-full">
       <div
@@ -20,18 +23,22 @@
       <video
         src="https://res.cloudinary.com/dkgnaegp9/video/upload/q_auto/f_auto/v1776356531/WhatsApp_Video_2026-04-07_at_14.10.14_e68hvc.mp4"
         class="w-full h-full object-cover shadow-md rounded-md overflow-hidden"
+        crossorigin="anonymous"
         autoplay
         loop
         muted
         playsinline
+        data-hero-video
       >
         Your browser does not support the video tag.
       </video>
     </div>
   </div>
 </header>
+
 <script>
   import { gsap } from "../lib/gsap";
+  import "../scripts/experience";
 
   const hero = document.querySelector("[data-hero]") as HTMLElement | null;
   const topbar = document.querySelector("[data-topbar]") as HTMLElement | null;
@@ -44,7 +51,11 @@
     // gsap.to(city, { x: 0, duration: 1.25, ease: "power2.out" });
     // gsap.to(year, { x: 0, duration: 1.25, ease: "power2.out" });
     const videoTl = gsap
-      .timeline({ paused: true })
+      .timeline({
+        paused: true,
+        onComplete: () =>
+          window.dispatchEvent(new CustomEvent("hero:animated")),
+      })
       .to(video, {
         opacity: 1,
         y: 0,

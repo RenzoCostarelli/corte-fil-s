@@ -8,14 +8,22 @@ const doubled = [...categories, ...categories];
   <div data-rotate>
     <div data-track class="flex w-max whitespace-nowrap will-change-transform">
       {
-        doubled.map((category, index) => (
+        doubled.map((category) => (
           <div
             data-item
             class:list={[
               "shrink-0 mr-8 text-8xl font-akira odd:text-transparent even:text-neutral-100 [text-stroke:2px_white] [-webkit-text-stroke:2px_white]",
             ]}
           >
-            {category.name}
+            {category.name.split("").map((char, charIndex) => (
+              <span
+                data-char
+                data-char-index={charIndex}
+                style="display:inline-block;padding:0 2px"
+              >
+                {char}
+              </span>
+            ))}
           </div>
         ))
       }
@@ -30,9 +38,7 @@ const doubled = [...categories, ...categories];
 
   function initMarquee(): (() => void) | null {
     const root = document.querySelector<HTMLElement>("[data-marquee]");
-
     const rotateEl = root?.querySelector<HTMLElement>("[data-rotate]");
-
     const track = root?.querySelector<HTMLElement>("[data-track]");
 
     if (!root || !rotateEl || !track) return null;
@@ -45,7 +51,6 @@ const doubled = [...categories, ...categories];
 
     const width = items.slice(0, half).reduce((total, item) => {
       const style = getComputedStyle(item);
-
       return total + item.offsetWidth + parseFloat(style.marginRight);
     }, 0);
 
@@ -59,25 +64,46 @@ const doubled = [...categories, ...categories];
       },
     });
 
-    gsap.set(rotateEl, {
-      rotate: 1.8,
-    });
+    // --- Mouse character displacement ---
+    const chars = Array.from(
+      track.querySelectorAll<HTMLElement>("[data-char]"),
+    );
 
-    const tl = gsap.timeline({ paused: true }).to(rotateEl, {
-      rotate: -1.8,
-    });
+    const MAX_DISP = 12; // px
 
-    const trigger = ScrollTrigger.create({
-      trigger: root,
-      start: "top center",
-      end: "bottom top",
-      animation: tl,
-      scrub: true,
-    });
+    const charSetters = chars.map((el) => ({
+      index: parseInt(el.dataset.charIndex ?? "0", 10),
+      setY: gsap.quickTo(el, "y", { duration: 0.5, ease: "power2.out" }),
+    }));
+
+    const onMouseMove = (e: MouseEvent) => {
+      // Normalize both axes to -1 … 1 from viewport center
+      const normX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const normY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      // Combine axes: average them so diagonal movement gives full effect
+      const influence = (normX + normY) / 2;
+
+      charSetters.forEach(({ index, setY }) => {
+        // Even index → follow combined influence
+        // Odd index  → oppose combined influence
+        const direction = index % 2 === 0 ? 1 : -1;
+        setY(influence * MAX_DISP * direction);
+      });
+    };
+
+    const onMouseLeave = () => {
+      charSetters.forEach(({ setY }) => setY(0));
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    document.documentElement.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
       loop.kill();
-      trigger.kill();
+      window.removeEventListener("mousemove", onMouseMove);
+      document.documentElement.removeEventListener("mouseleave", onMouseLeave);
+      gsap.set(chars, { y: 0 });
     };
   }
 
