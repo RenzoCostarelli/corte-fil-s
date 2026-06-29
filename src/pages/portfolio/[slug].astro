@@ -28,26 +28,37 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
 
 <Layout>
   <div class="pb-12">
-    <div class="container px-4 mx-auto">
+    <!-- <div class="container px-4 mx-auto">
       <BackButton href="/portfolio" />
-    </div>
+    </div> -->
     <div class="container px-4 mx-auto">
-      <article class="flex justify-between gap-24 py-12">
+      <article class="justify-between gap-24 py-12">
+        <div class="text-neutral-100 space-y-2 py-4">
+          <div id="hero-meta" class="text-sm font-univers-ex text-neutral-400">
+            {project.year} | {project.category} | {project.roles.join(", ")} | {
+              project.client
+            }
+          </div>
+          <div class="overflow-hidden">
+            <h1 id="hero-title" class="text-5xl font-akira">{project.name}</h1>
+          </div>
+        </div>
         <div
-          class="bg-neutral-800 h-128 w-lg aspect-square flex items-center justify-center text-white text-xl font-univers-ex tracking-wide shrink-0"
+          id="hero-image"
+          class="bg-neutral-800 w-full aspect-video flex items-center justify-center text-white text-xl font-univers-ex tracking-wide shrink-0 overflow-hidden"
           style={`view-transition-name: portfolio-hero-${project.slug}`}
         >
-          {project.name}
+          <img
+            src={project.thumbnail}
+            alt={`${project.name} thumbnail`}
+            class="w-full h-full object-cover"
+          />
         </div>
         <div class="text-neutral-100 py-4 space-y-6">
-          <div class="text-sm font-univers-ex text-neutral-400">
-            {project.year} | {project.category} | {project.roles.join(", ")}
-          </div>
-          <h1 class="text-6xl font-akira">{project.name}</h1>
-          <p class="font-univers-ex text-2xl text-pretty">
+          <p id="desc-1" class="font-univers-ex text-2xl text-pretty">
             {project.description}
           </p>
-          <p class="font-univers-ex text-2xl text-pretty">
+          <p id="desc-2" class="font-univers-ex text-2xl text-pretty">
             {project.longDescription}
           </p>
         </div>
@@ -55,20 +66,31 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
     </div>
     <div class="w-full">
       <div
+        id="project-banner"
         class="bg-neutral-800 h-128 mx-auto max-w-600 flex items-center justify-center text-white text-xl font-univers-ex tracking-wide"
       >
         {project.name}
       </div>
     </div>
     <div class="container px-4 mx-auto">
-      <p class="font-univers-ex text-2xl text-pretty text-neutral-100 py-8">
+      <p
+        id="desc-3"
+        class="font-univers-ex text-2xl text-pretty text-neutral-100 py-8"
+      >
         {project.longDescription}
       </p>
     </div>
     <div class="container px-4 mx-auto">
       <section class="py-12">
-        <h2 class="text-6xl font-akira text-neutral-100">Otros Proyectos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
+        <div class="overflow-hidden">
+          <h2 id="others-title" class="text-6xl font-akira text-neutral-100">
+            Otros Proyectos
+          </h2>
+        </div>
+        <div
+          id="others-grid"
+          class="grid grid-cols-1 md:grid-cols-3 gap-8 py-8"
+        >
           {
             relatedProjects.map((related) => (
               <a href={`/portfolio/${related.slug}`}>
@@ -99,3 +121,105 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
     </div>
   </div>
 </Layout>
+
+<script>
+  import { gsap, ScrollTrigger, SplitText } from "../../lib/gsap";
+
+  function initAnimations() {
+    // Matar ScrollTriggers previos para evitar duplicados en navegaciones
+    ScrollTrigger.getAll().forEach((st) => st.kill());
+
+    // --- Hero meta fade in ---
+    const heroMeta = document.getElementById("hero-meta");
+    if (heroMeta) {
+      gsap.from(heroMeta, {
+        opacity: 0,
+        y: 16,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+    }
+
+    // --- Hero title: chars slide up ---
+    const heroTitle = document.getElementById("hero-title");
+    if (heroTitle) {
+      const splitTitle = new SplitText(heroTitle, { type: "chars" });
+      gsap.from(splitTitle.chars, {
+        opacity: 0,
+        y: "100%",
+        stagger: 0.03,
+        duration: 0.7,
+        ease: "power3.out",
+        delay: 0.15,
+      });
+    }
+
+    // --- Description paragraphs: fade up on scroll ---
+    ["desc-1", "desc-2", "desc-3"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      gsap.from(el, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+        },
+      });
+    });
+
+    // --- Project banner fade in ---
+    const banner = document.getElementById("project-banner");
+    if (banner) {
+      gsap.from(banner, {
+        opacity: 0,
+        y: 30,
+        duration: 0.9,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: banner,
+          start: "top 88%",
+        },
+      });
+    }
+
+    // --- "Otros Proyectos" h2: chars slide up ---
+    const othersTitle = document.getElementById("others-title");
+    if (othersTitle) {
+      const splitH2 = new SplitText(othersTitle, { type: "chars" });
+      gsap.from(splitH2.chars, {
+        opacity: 0,
+        y: "100%",
+        stagger: 0.025,
+        duration: 0.65,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: othersTitle,
+          start: "top 88%",
+        },
+      });
+    }
+
+    // --- Related project cards: stagger fade up ---
+    const othersGrid = document.getElementById("others-grid");
+    if (othersGrid) {
+      const cards = othersGrid.querySelectorAll("a");
+      gsap.from(cards, {
+        opacity: 0,
+        y: 60,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: othersGrid,
+          start: "top 88%",
+        },
+      });
+    }
+  }
+
+  // Se dispara en carga inicial y en cada navegación con View Transitions
+  document.addEventListener("astro:page-load", initAnimations);
+</script>

@@ -109,13 +109,16 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
       });
     </script>
     <div class="container px-4 mx-auto">
-      <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
+      <h1 class="font-akira text-5xl text-neutral-50">Portfolio</h1>
+      <p class="font-univers-ex text-2xl text-pretty text-neutral-50">
+        Nuestra selección de proyectos
+      </p>
       <div
         class="flex items-center justify-end gap-6 pt-8 px-2"
         data-categories
       >
         <button
-          class="text-neutral-50 hover:text-neutral-50 text-xl font-univers-ex tracking-wider"
+          class="text-neutral-50 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider"
           data-filter-btn="Todos"
         >
           Todos
@@ -123,7 +126,7 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
         {
           categories.map((category) => (
             <button
-              class="text-neutral-400 hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty"
+              class="text-neutral-400 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty"
               data-filter-btn={category.name}
             >
               {category.name}

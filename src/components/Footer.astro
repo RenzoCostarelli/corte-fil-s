@@ -5,10 +5,17 @@ import SectionTitle from "./ui/SectionTitle.astro";
 ---
 
 <footer class="py-12">
-  <div class="container px-4 mx-auto h-full">
-    <div class="flex flex-col justify-between gap-24 h-full">
-      <div class="space-y-4">
-        <SectionTitle title="Hablemos" class="text-neutral-100" />
+  <div class="container px-4 mx-auto">
+    <div class="flex w-full justify-between items-end">
+      <div class="flex flex-col justify-between gap-8">
+        <div class="space-y-4 text-neutral-100">
+          <SectionTitle title="Contacto" />
+          <p class="font-univers-ex text-2xl text-pretty">
+            ¿Tenés un proyecto en mente?
+            <br />
+            Escribinos
+          </p>
+        </div>
         <div>
           {
             social.map((item) => {
@@ -16,7 +23,7 @@ import SectionTitle from "./ui/SectionTitle.astro";
               return (
                 <a
                   href={item.url}
-                  class="text-neutral-100 mr-4 w-18 inline-block"
+                  class="text-neutral-100 mr-4 w-10 inline-block"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={item.name}
@@ -28,7 +35,7 @@ import SectionTitle from "./ui/SectionTitle.astro";
           }
         </div>
       </div>
-      <div class="flex items-center flex-col gap-6">
+      <div class="flex items-end flex-col gap-6">
         <div class="text-white w-32">
           <Logo />
         </div>
