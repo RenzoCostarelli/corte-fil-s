@@ -5,7 +5,12 @@ import SectionTitle from "./ui/SectionTitle.astro";
 <section class="py-12 px-4" data-reel-section>
   <div class="mx-auto">
     <div class="py-8">
-      <div class="bg-neutral-700 w-full aspect-video mx-auto" data-reel></div>
+      <div
+        class="bg-neutral-700 w-full aspect-video mx-auto"
+        data-reel
+        data-link
+      >
+      </div>
     </div>
   </div>
 </section>
@@ -28,6 +33,6 @@ import SectionTitle from "./ui/SectionTitle.astro";
         end: "center center",
         scrub: true,
       },
-    }
+    },
   );
 </script>

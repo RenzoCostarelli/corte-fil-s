@@ -6,6 +6,7 @@ import Logo from "../components/ui/Logo.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import TopBar from "../components/TopBar.astro";
+import CustomCursor from "../components/CustomCursor.astro";
 ---
 
 <html lang="es">
@@ -22,7 +23,7 @@ import TopBar from "../components/TopBar.astro";
     <ClientRouter />
   </head>
   <body>
-    <!-- <div id="custom-cursor"></div> -->
+    <CustomCursor />
     <TopBar />
     <main>
       <slot />
