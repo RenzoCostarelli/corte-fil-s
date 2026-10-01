@@ -26,9 +26,9 @@ export function initCursor() {
   // });
 
   const onEnterLink = () =>
-    gsap.to(cursor, { scale: 1.5, duration: 0.3, ease: "power2.out" });
-  const onLeaveLink = () =>
     gsap.to(cursor, { scale: 1, duration: 0.3, ease: "power2.out" });
+  const onLeaveLink = () =>
+    gsap.to(cursor, { scale: 0.5, duration: 0.3, ease: "power2.out" });
 
   const onEnterVideoLink = () => {
     gsap.to(cursor, {
@@ -39,7 +39,7 @@ export function initCursor() {
     });
     if (cursorLabel) {
       cursorLabel.textContent = "Ver reel";
-      gsap.set(cursorLabel, { scale: 0.35 });
+      gsap.set(cursorLabel, { scale: 0.55 });
       gsap.to(cursorLabel, { opacity: 1, duration: 0.3 });
     }
   };
