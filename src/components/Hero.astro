@@ -2,21 +2,8 @@
   class="text-neutral-700 gap-12 w-full relative overflow-hidden"
   data-hero
 >
-  <!-- <div class="fixed h-full w-full inset-0 z-999 flex items-end">
-    <div class="text-9xl font-bold leading-none text-right w-full">
-      <div
-        class="font-akira relative w-full flex justify-between overflow-hidden"
-      >
-        <span
-          class="[text-stroke:2px_white] [-webkit-text-stroke:2px_#404040] -translate-x-[100%] text-transparent inline-block pl-4"
-          data-city>ROS</span
-        >
-        <span class="translate-x-[100%] pr-4" data-year>26</span>
-      </div>
-    </div>
-  </div> -->
   <div class="px-4">
-    <div class="h-svh mx-auto w-full scale-75 translate-y-[50%]" data-video>
+    <div class="h-[50svh] mx-auto w-full will-change-transform" data-video>
       <video
         src="https://res.cloudinary.com/dkgnaegp9/video/upload/q_auto/f_auto/v1776356531/WhatsApp_Video_2026-04-07_at_14.10.14_e68hvc.mp4"
         class="w-full h-full object-cover shadow-md rounded-md overflow-hidden"
@@ -35,54 +22,66 @@
 
 <script>
   import { gsap } from "../lib/gsap";
-  import "../scripts/experience";
+  import {
+    init as initExperience,
+    destroy as destroyExperience,
+  } from "../scripts/experience";
 
-  const hero = document.querySelector("[data-hero]") as HTMLElement | null;
-  const topbar = document.querySelector("[data-topbar]") as HTMLElement | null;
-  const year = hero?.querySelector("[data-year]") as HTMLElement | null;
-  const video = hero?.querySelector("[data-video]") as HTMLElement | null;
-  const city = hero?.querySelector("[data-city]") as HTMLElement | null;
-  function animateHeroIn() {
-    if (!topbar || !video) return;
+  let ctx: gsap.Context | null = null;
 
-    // gsap.to(city, { x: 0, duration: 1.25, ease: "power2.out" });
-    // gsap.to(year, { x: 0, duration: 1.25, ease: "power2.out" });
-    const videoTl = gsap
-      .timeline({
-        paused: true,
-        onComplete: () =>
-          window.dispatchEvent(new CustomEvent("hero:animated")),
-      })
-      .to(video, {
-        opacity: 1,
-        y: 0,
-        duration: 1.25,
-        ease: "power2.out",
-        delay: 0.5,
-      })
-      .to(
-        topbar,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        "<0.5",
-      )
-      .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=1");
+  document.addEventListener("astro:page-load", () => {
+    const hero = document.querySelector("[data-hero]") as HTMLElement | null;
+    if (!hero) return;
 
-    videoTl.play();
-  }
+    const video = hero.querySelector("[data-video]") as HTMLElement | null;
+    if (!video) return;
 
-  if ((window as any).__loaderDone) {
-    // Navigating back to home — animate in immediately, no loader
-    animateHeroIn();
-  } else {
-    if (year && video) {
-      gsap.set(video, { opacity: 0 });
-      gsap.set(year, { y: 200 });
+    const heroVideo = hero.querySelector(
+      "[data-hero-video]",
+    ) as HTMLVideoElement | null;
+    if (heroVideo) {
+      heroVideo.load();
+      heroVideo.play().catch(() => {});
     }
-    window.addEventListener("loader:done", animateHeroIn, { once: true });
-  }
+
+    ctx?.revert();
+
+    ctx = gsap.context(() => {
+      gsap.set(video, { opacity: 0, yPercent: 50, scale: 0.75 });
+
+      function animateHeroIn() {
+        gsap
+          .timeline({
+            onComplete: () =>
+              window.dispatchEvent(new CustomEvent("hero:animated")),
+          })
+          .to(video, {
+            opacity: 1,
+            yPercent: 0,
+            duration: 1.25,
+            ease: "power2.out",
+            delay: 0.5,
+          })
+          .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=1");
+      }
+
+      if ((window as any).__loaderDone) {
+        animateHeroIn();
+      } else {
+        window.addEventListener("loader:done", animateHeroIn, { once: true });
+      }
+    }, hero);
+
+    try {
+      initExperience(hero);
+    } catch (e) {
+      console.warn("[Hero] Three.js experience failed to initialize:", e);
+    }
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    ctx?.revert();
+    ctx = null;
+    destroyExperience();
+  });
 </script>

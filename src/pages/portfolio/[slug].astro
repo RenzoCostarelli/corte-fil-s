@@ -1,66 +1,83 @@
 ---
-import { portfolio } from "../../data";
-import BackButton from "../../components/ui/BackButton.astro";
+import * as prismic from "@prismicio/client";
+import { getAllPosts } from "../../lib/prismicio";
+import type { ProjectDocument } from "../../types/prismic";
 import ArrowIcon from "../../components/ui/icons/ArrowIcon.astro";
+import PrismicRichText from "../../components/ui/PrismicRichText.astro";
 import Layout from "../../layouts/Layout.astro";
 
-export function getStaticPaths() {
-  return portfolio.map((project) => ({
-    params: { slug: project.slug },
-    props: { project },
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: { slug: post.uid },
+    props: { post, allPosts: posts },
   }));
 }
 
-const { project } = Astro.props;
+interface Props {
+  post: ProjectDocument;
+  allPosts: ProjectDocument[];
+}
 
-const otherProjects = portfolio
-  .filter((p) => p.slug !== project.slug && p.category === project.category)
+const { post, allPosts } = Astro.props;
+
+const title = prismic.asText(post.data.title);
+const thumbnail = post.data.miniatura?.url;
+const clientName = post.data.client_name;
+const year = post.data.year;
+const category = post.data.category;
+const roles = post.data.roles_group.map((item) => item.role).filter(Boolean);
+const firstText = post.data.first_text;
+const secondText = post.data.second_text;
+const gallery = post.data.gallery;
+
+const otherProjects = allPosts
+  .filter((p) => p.uid !== post.uid && p.data.category === category)
   .slice(0, 3);
 
-const otherSlugs = new Set([project.slug, ...otherProjects.map((p) => p.slug)]);
+const otherUids = new Set([post.uid, ...otherProjects.map((p) => p.uid)]);
 
-const fallbackProjects = portfolio
-  .filter((p) => !otherSlugs.has(p.slug))
+const fallbackProjects = allPosts
+  .filter((p) => !otherUids.has(p.uid))
   .slice(0, 3 - otherProjects.length);
 
 const relatedProjects = [...otherProjects, ...fallbackProjects];
 ---
 
-<Layout>
+<Layout
+  title={`Corte Films | ${title}`}
+  description={prismic.asText(firstText) || undefined}
+  ogImage={thumbnail ?? undefined}
+>
   <div class="pb-12">
-    <!-- <div class="container px-4 mx-auto">
-      <BackButton href="/portfolio" />
-    </div> -->
     <div class="container px-4 mx-auto">
       <article class="justify-between gap-24 py-12">
         <div class="text-neutral-100 space-y-2 py-4">
           <div id="hero-meta" class="text-sm font-univers-ex text-neutral-400">
-            {project.year} | {project.category} | {project.roles.join(", ")} | {
-              project.client
-            }
+            {year} | {category} | {roles.join(", ")} | {clientName}
           </div>
           <div class="overflow-hidden">
-            <h1 id="hero-title" class="text-5xl font-akira">{project.name}</h1>
+            <h1 id="hero-title" class="text-5xl font-akira">{title}</h1>
           </div>
         </div>
         <div
           id="hero-image"
           class="bg-neutral-800 w-full aspect-video flex items-center justify-center text-white text-xl font-univers-ex tracking-wide shrink-0 overflow-hidden"
-          style={`view-transition-name: portfolio-hero-${project.slug}`}
+          style={`view-transition-name: portfolio-hero-${post.uid}`}
         >
-          <img
-            src={project.thumbnail}
-            alt={`${project.name} thumbnail`}
-            class="w-full h-full object-cover"
-          />
+          {
+            thumbnail && (
+              <img
+                src={thumbnail}
+                alt={`${title} thumbnail`}
+                class="w-full h-full object-cover"
+              />
+            )
+          }
         </div>
-        <div class="text-neutral-100 py-4 space-y-6">
-          <p id="desc-1" class="font-univers-ex text-2xl text-pretty">
-            {project.description}
-          </p>
-          <p id="desc-2" class="font-univers-ex text-2xl text-pretty">
-            {project.longDescription}
-          </p>
+        <div class="py-4 space-y-6">
+          <PrismicRichText field={firstText} id="desc-1" />
+          <PrismicRichText field={secondText} id="desc-2" />
         </div>
       </article>
     </div>
@@ -69,24 +86,31 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
         id="project-banner"
         class="bg-neutral-800 h-128 mx-auto max-w-600 flex items-center justify-center text-white text-xl font-univers-ex tracking-wide"
       >
-        {project.name}
+        {title}
       </div>
     </div>
     <div class="container px-4 mx-auto">
-      <p
-        id="desc-3"
-        class="font-univers-ex text-2xl text-pretty text-neutral-100 py-8"
-      >
-        {project.longDescription}
-      </p>
+      <PrismicRichText field={secondText} id="desc-3" class="py-8" />
     </div>
-    <div class="container mx-auto">
-      <div class="grid md:grid-cols-3 grid-cols-1 gap-4">
-        <div class="aspect-square w-full bg-neutral-400 rounded-md"></div>
-        <div class="aspect-square w-full bg-neutral-400 rounded-md"></div>
-        <div class="aspect-square w-full bg-neutral-400 rounded-md"></div>
-      </div>
-    </div>
+    {
+      gallery.length > 0 && (
+        <div class="container mx-auto py-4">
+          <div class="grid md:grid-cols-3 grid-cols-1 gap-4">
+            {gallery.map((item) =>
+              item.image?.url ? (
+                <img
+                  src={item.image.url}
+                  alt={item.image.alt ?? ""}
+                  class="aspect-square w-full object-cover rounded-md"
+                />
+              ) : (
+                <div class="aspect-square w-full bg-neutral-400 rounded-md" />
+              ),
+            )}
+          </div>
+        </div>
+      )
+    }
     <div class="container px-4 mx-auto">
       <section class="py-12">
         <div class="overflow-hidden">
@@ -100,12 +124,20 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
         >
           {
             relatedProjects.map((related) => (
-              <a href={`/portfolio/${related.slug}`}>
+              <a href={`/portfolio/${related.uid}`}>
                 <div
-                  class="bg-neutral-800 h-64 flex items-center justify-center text-white font-univers-ex tracking-wide hover:bg-neutral-700 transition-colors"
-                  style={`view-transition-name: portfolio-hero-${related.slug}`}
+                  class="bg-neutral-800 h-64 flex items-center justify-center text-white font-univers-ex tracking-wide hover:bg-neutral-700 transition-colors overflow-hidden"
+                  style={`view-transition-name: portfolio-hero-${related.uid}`}
                 >
-                  {related.name}
+                  {related.data.miniatura?.url ? (
+                    <img
+                      src={related.data.miniatura.url}
+                      alt={prismic.asText(related.data.title)}
+                      class="w-full h-full object-cover"
+                    />
+                  ) : (
+                    prismic.asText(related.data.title)
+                  )}
                 </div>
               </a>
             ))
@@ -132,10 +164,9 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
 <script>
   import { gsap, ScrollTrigger, SplitText } from "../../lib/gsap";
 
-  function initAnimations() {
-    // Matar ScrollTriggers previos para evitar duplicados en navegaciones
-    ScrollTrigger.getAll().forEach((st) => st.kill());
+  let ctx: gsap.Context | null = null;
 
+  function initAnimations() {
     // --- Hero meta fade in ---
     const heroMeta = document.getElementById("hero-meta");
     if (heroMeta) {
@@ -227,6 +258,15 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
     }
   }
 
-  // Se dispara en carga inicial y en cada navegación con View Transitions
-  document.addEventListener("astro:page-load", initAnimations);
+  document.addEventListener("astro:page-load", () => {
+    // Guard: only run on portfolio detail pages
+    if (!document.getElementById("hero-title")) return;
+
+    ctx = gsap.context(() => initAnimations());
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    ctx?.revert();
+    ctx = null;
+  });
 </script>
