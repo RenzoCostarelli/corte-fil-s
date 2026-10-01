@@ -2,15 +2,15 @@
 import { portfolio } from "../data/portfolio";
 import AboutCarousel from "./AboutCarousel.astro";
 
-const thumbnails = portfolio
-  .filter((p) => p.thumbnail)
-  .map((p) => p.thumbnail as string);
+// const thumbnails = portfolio
+//   .filter((p) => p.thumbnail)
+//   .map((p) => p.thumbnail as string);
 
-// Cycle through thumbnails to fill 6 trail image slots
-const trailImages = Array.from(
-  { length: 12 },
-  (_, i) => thumbnails[i % thumbnails.length],
-).filter(Boolean);
+// // Cycle through thumbnails to fill 6 trail image slots
+// const trailImages = Array.from(
+//   { length: 12 },
+//   (_, i) => thumbnails[i % thumbnails.length],
+// ).filter(Boolean);
 ---
 
 <section
@@ -18,7 +18,7 @@ const trailImages = Array.from(
   data-container
   data-about-section
 >
-  <div class="pointer-events-none absolute inset-0 z-50" aria-hidden="true">
+  <!-- <div class="pointer-events-none absolute inset-0 z-50" aria-hidden="true">
     {
       trailImages.map((src) => (
         <img
@@ -33,10 +33,10 @@ const trailImages = Array.from(
         />
       ))
     }
-  </div>
-  <h2 class="text-5xl font-akira text-neutral-100 mb-8">Nosotros</h2>
+  </div> -->
+  <h2 class="text-5xl font-akira text-neutral-200 mb-8">Nosotros</h2>
   <p
-    class="text-neutral-100 text-3xl text-balance md:max-w-[70svw] font-semibold font-univers-ex leading-tight tracking-wide relative z-10"
+    class="text-neutral-200 text-3xl text-balance md:max-w-[70svw] font-semibold font-univers-ex leading-tight tracking-wide relative z-10"
     data-about-paragraph
   >
     Somos una <span class="font-akira font-thin">productora audiovisual</span> con
