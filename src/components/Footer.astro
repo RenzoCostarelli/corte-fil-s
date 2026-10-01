@@ -10,13 +10,16 @@ import SectionTitle from "./ui/SectionTitle.astro";
       <div class="flex flex-col justify-between gap-8">
         <div class="space-y-4 text-neutral-100">
           <SectionTitle title="Contacto" />
-          <p class="font-univers-ex text-2xl text-pretty">
+          <p
+            class="font-univers-ex text-2xl text-pretty"
+            data-footer-text
+          >
             ¿Tenés un proyecto en mente?
             <br />
             Escribinos
           </p>
         </div>
-        <div>
+        <div data-footer-socials>
           {
             social.map((item) => {
               const Icon = icons[item.icon as keyof typeof icons];
@@ -36,10 +39,10 @@ import SectionTitle from "./ui/SectionTitle.astro";
         </div>
       </div>
       <div class="flex items-end flex-col gap-6">
-        <div class="text-white w-32">
+        <div class="text-white w-32" data-footer-logo>
           <Logo />
         </div>
-        <nav>
+        <nav data-footer-nav>
           <ul class="text-white flex gap-4 items-center justify-end">
             {
               navItems.map((item) => (
@@ -52,5 +55,118 @@ import SectionTitle from "./ui/SectionTitle.astro";
         </nav>
       </div>
     </div>
+
+    <!-- <div
+      class="text-9xl font-bold leading-none text-right w-full text-neutral-50"
+    >
+      <div
+        class="font-akira relative w-full flex justify-between overflow-hidden"
+      >
+        <span
+          class="[text-stroke:2px_white] [-webkit-text-stroke:2px_#404040] text-transparent inline-block"
+          data-city>ROS</span
+        >
+        <span data-year>26</span>
+      </div>
+    </div> -->
   </div>
 </footer>
+
+<script>
+  import { gsap, ScrollTrigger } from "../lib/gsap";
+
+  let triggers: ScrollTrigger[] = [];
+
+  document.addEventListener("astro:page-load", () => {
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    const text = footer.querySelector<HTMLElement>("[data-footer-text]");
+    const socialIcons = Array.from(
+      footer.querySelectorAll<HTMLElement>("[data-footer-socials] a"),
+    );
+    const logo = footer.querySelector<HTMLElement>("[data-footer-logo]");
+    const navLinks = Array.from(
+      footer.querySelectorAll<HTMLElement>("[data-footer-nav] li"),
+    );
+
+    if (text) {
+      gsap.set(text, { y: 30, opacity: 0 });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: text,
+          start: "top 90%",
+          animation: gsap.to(text, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            paused: true,
+          }),
+          toggleActions: "play none none reverse",
+        }),
+      );
+    }
+
+    if (socialIcons.length) {
+      gsap.set(socialIcons, { y: 20, opacity: 0 });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: footer,
+          start: "top bottom",
+          animation: gsap.to(socialIcons, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+            paused: true,
+          }),
+          toggleActions: "play none none reverse",
+        }),
+      );
+    }
+
+    if (logo) {
+      gsap.set(logo, { y: 30, opacity: 0 });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: logo,
+          start: "top 90%",
+          animation: gsap.to(logo, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            paused: true,
+          }),
+          toggleActions: "play none none reverse",
+        }),
+      );
+    }
+
+    if (navLinks.length) {
+      gsap.set(navLinks, { y: 20, opacity: 0 });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: navLinks[0],
+          start: "top 90%",
+          animation: gsap.to(navLinks, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "power2.out",
+            paused: true,
+          }),
+          toggleActions: "play none none reverse",
+        }),
+      );
+    }
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    triggers.forEach((t) => t.kill());
+    triggers = [];
+  });
+</script>

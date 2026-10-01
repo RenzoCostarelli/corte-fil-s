@@ -6,16 +6,23 @@ import Loader from "../components/Loader.astro";
 import Marquee from "../components/Marquee.astro";
 import Portfolio from "../components/Portfolio.astro";
 import Reel from "../components/Reel.astro";
+import Categories from "../components/Categories.astro";
 import Layout from "../layouts/Layout.astro";
 import Clients from "../components/Clients.astro";
+import { getAllPosts } from "../lib/prismicio";
+
+const posts = await getAllPosts();
 ---
 
 <Layout>
   <Loader />
   <Hero />
-  <About />
-  <Portfolio />
-  <Clients />
-  <!-- <Marquee /> -->
-  <Reel />
+  <div class="overflow-hidden">
+    <About />
+    <Reel />
+    <Categories />
+    <!-- <Portfolio posts={posts} /> -->
+    <Clients />
+    <!-- <Marquee /> -->
+  </div>
 </Layout>

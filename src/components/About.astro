@@ -1,5 +1,6 @@
 ---
 import { portfolio } from "../data/portfolio";
+import AboutCarousel from "./AboutCarousel.astro";
 
 const thumbnails = portfolio
   .filter((p) => p.thumbnail)
@@ -13,11 +14,11 @@ const trailImages = Array.from(
 ---
 
 <section
-  class="container px-4 mx-auto h-svh flex items-center relative"
+  class="px-4 mx-auto flex flex-col relative py-12"
   data-container
   data-about-section
 >
-  <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+  <div class="pointer-events-none absolute inset-0 z-50" aria-hidden="true">
     {
       trailImages.map((src) => (
         <img
@@ -28,19 +29,21 @@ const trailImages = Array.from(
           loading="eager"
           decoding="async"
           class="absolute object-cover select-none will-change-transform"
-          style="width:140px;height:180px;opacity:0;pointer-events:none;tranform:scale(0.1);"
+          style="width:60px;height:60px;opacity:0;pointer-events:none;tranform:scale(0.1);"
         />
       ))
     }
   </div>
-
+  <h2 class="text-5xl font-akira text-neutral-100 mb-8">Nosotros</h2>
   <p
-    class="text-neutral-100 text-5xl font-semibold text-center font-univers-ex leading-tight tracking-wide text-pretty relative z-10"
+    class="text-neutral-100 text-3xl text-balance md:max-w-[70svw] font-semibold font-univers-ex leading-tight tracking-wide relative z-10"
     data-about-paragraph
   >
-    Somos una productora audiovisual con enfoque cinematográfico, especializada
-    en transformar ideas en piezas visuales con carácter, estética y emoción.
+    Somos una <span class="font-akira font-thin">productora audiovisual</span> con
+    enfoque cinematografico, especializada en transformar ideas en piezas visuales
+    con caracter, estetica y emocion.
   </p>
+  <AboutCarousel />
 </section>
 
 <script>

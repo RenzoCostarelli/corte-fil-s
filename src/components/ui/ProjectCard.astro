@@ -1,34 +1,39 @@
 ---
-import type { PortfolioItem } from "../../data";
-import { Image } from "astro:assets";
+import * as prismic from "@prismicio/client";
+import type { ProjectDocument } from "../../types/prismic";
 import ArrowIcon from "./icons/ArrowIcon.astro";
 
 interface Props {
-  project: PortfolioItem;
+  post: ProjectDocument;
   from?: string;
 }
 
-const { project, from } = Astro.props;
+const { post, from } = Astro.props;
+const slug = post.uid;
 const href = from
-  ? `/portfolio/${project.slug}?from=${encodeURIComponent(from)}`
-  : `/portfolio/${project.slug}`;
+  ? `/portfolio/${slug}?from=${encodeURIComponent(from)}`
+  : `/portfolio/${slug}`;
+const title = prismic.asText(post.data.title);
+const thumbnail = post.data.miniatura?.url;
+const clientName = post.data.client_name;
+const category = post.data.category;
 ---
 
 <a
   href={href}
   data-project-card
-  data-category-item={project.category}
+  data-category-item={category}
   class="rounded-sm overflow-hidden"
 >
   <div
     class="bg-neutral-800 h-128 text-white gap-2 relative group overflow-hidden"
-    style={`view-transition-name: portfolio-hero-${project.slug}`}
+    style={`view-transition-name: portfolio-hero-${slug}`}
   >
     {
-      project.thumbnail && (
+      thumbnail && (
         <img
-          src={project.thumbnail}
-          alt={project.name}
+          src={thumbnail}
+          alt={title}
           class="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-500"
         />
       )
@@ -37,14 +42,14 @@ const href = from
       class="absolute left-3 bottom-3 w-max bg-white/2 backdrop-blur-sm px-3 pb-2 pt-12 max-w-[80%]"
     >
       {
-        project.client && (
+        clientName && (
           <div class="text-xs uppercase font-semibold tracking-wider flex gap-2 items-center">
             <div class="h-1 w-1 bg-white" />
-            {project.client}
+            {clientName}
           </div>
         )
       }
-      <div class="text-lg font-akira tracking-wide">{project.name}</div>
+      <div class="text-lg font-akira tracking-wide">{title}</div>
     </div>
     <div class="absolute bottom-3 right-3">
       <div

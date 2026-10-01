@@ -1,38 +1,64 @@
 ---
-import SectionTitle from "./ui/SectionTitle.astro";
+
 ---
 
 <section class="py-12 px-4" data-reel-section>
   <div class="mx-auto">
     <div class="py-8">
       <div
-        class="bg-neutral-700 w-full aspect-video mx-auto"
+        class="bg-neutral-700 w-full md:h-[90svh] rounded-md aspect-video mx-auto"
         data-reel
         data-link
       >
+        <video
+          src="https://res.cloudinary.com/rlebuswv/video/upload/v1790868764/comprimido_prueba.mp4"
+          class="w-full h-full object-cover shadow-md rounded-md overflow-hidden"
+          crossorigin="anonymous"
+          autoplay
+          loop
+          muted
+          playsinline
+          data-hero-video
+        >
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  import { gsap } from "../lib/gsap";
+  import { gsap, ScrollTrigger } from "../lib/gsap";
 
-  const reel = document.querySelector("[data-reel]") as HTMLElement;
-  const section = document.querySelector("[data-reel-section]") as HTMLElement;
+  let ctx: gsap.Context | null = null;
 
-  gsap.fromTo(
-    reel,
-    { scale: 0.75 },
-    {
-      scale: 1,
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top bottom",
-        end: "center center",
-        scrub: true,
-      },
-    },
-  );
+  document.addEventListener("astro:page-load", () => {
+    const reel = document.querySelector("[data-reel]") as HTMLElement | null;
+    const section = document.querySelector(
+      "[data-reel-section]",
+    ) as HTMLElement | null;
+    if (!reel || !section) return;
+
+    ctx = gsap.context(() => {
+      gsap.fromTo(
+        reel,
+        { scale: 0.75 },
+        {
+          scale: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "center center",
+            scrub: true,
+          },
+        },
+      );
+    });
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    ctx?.revert();
+    ctx = null;
+  });
 </script>

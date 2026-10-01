@@ -22,7 +22,7 @@
 
   if (sessionStorage.getItem("loaderShown")) {
     (window as any).__loaderDone = true;
-    loader.remove();
+    loader?.remove();
     window.dispatchEvent(new CustomEvent("loader:done"));
   } else {
     sessionStorage.setItem("loaderShown", "1");

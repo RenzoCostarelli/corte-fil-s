@@ -1,0 +1,42 @@
+---
+import * as prismic from "@prismicio/client";
+import type { RichTextField } from "@prismicio/client";
+
+interface Props {
+  field: RichTextField;
+  class?: string;
+  id?: string;
+}
+
+const { field, class: className = "", id } = Astro.props;
+const html = prismic.asHTML(field);
+---
+
+{
+  html && (
+    <div
+      id={id}
+      class:list={[
+        "space-y-4",
+        // Headings
+        "[&_h1]:font-akira [&_h1]:text-5xl [&_h1]:text-neutral-100",
+        "[&_h2]:font-akira [&_h2]:text-3xl [&_h2]:text-neutral-100",
+        "[&_h3]:font-akira [&_h3]:text-2xl [&_h3]:text-neutral-100",
+        "[&_h4]:font-akira [&_h4]:text-xl [&_h4]:text-neutral-100",
+        // Párrafos
+        "[&_p]:font-univers-ex [&_p]:text-2xl [&_p]:text-pretty [&_p]:text-neutral-100",
+        // Inline
+        "[&_strong]:font-bold",
+        "[&_em]:italic [&_em]:font-univers-ex-obl",
+        // Links
+        "[&_a]:underline [&_a]:text-neutral-100 [&_a]:hover:text-neutral-400 [&_a]:transition-colors",
+        // Listas
+        "[&_ul]:list-disc [&_ul]:pl-6",
+        "[&_ol]:list-decimal [&_ol]:pl-6",
+        "[&_li]:font-univers-ex [&_li]:text-xl [&_li]:text-neutral-100",
+        className,
+      ]}
+      set:html={html}
+    />
+  )
+}

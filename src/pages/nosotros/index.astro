@@ -5,24 +5,79 @@ import Layout from "../../layouts/Layout.astro";
 <Layout>
   <section class="min-h-svh space-y-12 py-24">
     <div class="container mx-auto">
-      <div class="grid grid-cols-12">
+      <div class="grid grid-cols-12 gap-5">
         <div class="md:col-span-6 text-neutral-50">
-          <h1 class="font-akira text-3xl mb-3">Nosotros</h1>
-          <p class="font-univers-ex text-2xl text-pretty mb-2">
+          <h1 class="font-akira text-3xl mb-3" data-nosotros-text>Nosotros</h1>
+          <p
+            class="font-univers-ex text-2xl text-pretty mb-2"
+            data-nosotros-text
+          >
             Somos una productora audiovisual con enfoque cinematográfico,
             especializada en transformar ideas en piezas visuales con carácter,
             estética y emoción.
           </p>
-          <p class="font-univers-ex text-2xl text-pretty">
+          <p class="font-univers-ex text-2xl text-pretty" data-nosotros-text>
             Somos una productora audiovisual con enfoque cinematográfico,
             especializada en transformar ideas en piezas visuales con carácter,
             estética y emoción.
           </p>
         </div>
         <div class="md:col-span-6 text-neutral-50">
-          <div class="w-full aspect-4/3 bg-neutral-200 rounded-md"></div>
+          <div
+            class="w-full aspect-4/3 bg-neutral-200 rounded-md"
+            data-nosotros-image
+          >
+          </div>
         </div>
       </div>
     </div>
   </section>
 </Layout>
+
+<script>
+  import { gsap, SplitText } from "../../lib/gsap";
+
+  let ctx: gsap.Context | null = null;
+
+  document.addEventListener("astro:page-load", () => {
+    const textEls = document.querySelectorAll<HTMLElement>("[data-nosotros-text]");
+    const imageEl = document.querySelector<HTMLElement>("[data-nosotros-image]");
+
+    ctx?.revert();
+    ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.2 });
+
+      textEls.forEach((el) => {
+        const split = new SplitText(el, { type: "lines" });
+        gsap.set(split.lines, { opacity: 0, y: 40, filter: "blur(8px)" });
+
+        tl.to(
+          split.lines,
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.6,
+            stagger: 0.06,
+            ease: "power2.out",
+          },
+          "<0.1",
+        );
+      });
+
+      if (imageEl) {
+        gsap.set(imageEl, { opacity: 0, y: 40 });
+        tl.to(
+          imageEl,
+          { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+          "<0.2",
+        );
+      }
+    });
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    ctx?.revert();
+    ctx = null;
+  });
+</script>
