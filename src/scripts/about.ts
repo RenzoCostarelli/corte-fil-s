@@ -28,6 +28,8 @@ class ImageTrail {
   private lastMouse = { x: 0, y: 0 };
   private cached = { x: 0, y: 0 };
   private rafId = 0;
+  private isVisible = false;
+  private observer: IntersectionObserver | null = null;
   /** Minimum px the cursor must travel before showing the next image */
   private threshold = 80;
 

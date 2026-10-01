@@ -7,11 +7,11 @@ import { aboutCarouselSlides } from "../data";
     <div class="shrink-0 w-[20vw] lg:w-[35vw]" aria-hidden="true"></div>
     {
       aboutCarouselSlides.map((slide) => (
-        <div class="shrink-0 w-[70vw] lg:w-[28vw]" data-carousel-slide>
-          <div
-            class="aspect-3/2 w-full bg-yellow-100 rounded-md"
-            role="img"
-            aria-label={slide.alt}
+        <div class="shrink-0 w-[70vw] lg:w-[28vw] " data-carousel-slide>
+          <img
+            class="aspect-square w-full bg-yellow-100 rounded-md object-cover"
+            alt={slide.alt}
+            src={slide.url}
           />
         </div>
       ))
