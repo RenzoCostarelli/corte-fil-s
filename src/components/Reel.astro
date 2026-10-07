@@ -2,12 +2,13 @@
 
 ---
 
-<section class="py-12 px-4" data-reel-section>
+<section class="pt-12 px-4" data-reel-section>
   <div class="mx-auto">
-    <div class="py-8">
+    <div class="pb-6 pt-8">
       <div
         class="bg-neutral-700 w-full md:h-[90svh] rounded-md aspect-video mx-auto"
         data-reel
+        data-video
         data-link
       >
         <video
@@ -29,8 +30,10 @@
 
 <script>
   import { gsap, ScrollTrigger } from "../lib/gsap";
+  import { createExperience } from "../scripts/experience";
 
   let ctx: gsap.Context | null = null;
+  const experience = createExperience();
 
   document.addEventListener("astro:page-load", () => {
     const reel = document.querySelector("[data-reel]") as HTMLElement | null;
@@ -38,6 +41,20 @@
       "[data-reel-section]",
     ) as HTMLElement | null;
     if (!reel || !section) return;
+
+    const reelVideo = reel.querySelector(
+      "[data-hero-video]",
+    ) as HTMLVideoElement | null;
+    if (reelVideo) {
+      reelVideo.load();
+      reelVideo.play().catch(() => {});
+    }
+
+    try {
+      experience.init(reel);
+    } catch (e) {
+      console.warn("[Reel] Three.js experience failed to initialize:", e);
+    }
 
     ctx = gsap.context(() => {
       gsap.fromTo(
@@ -60,5 +77,6 @@
   document.addEventListener("astro:before-swap", () => {
     ctx?.revert();
     ctx = null;
+    experience.destroy();
   });
 </script>

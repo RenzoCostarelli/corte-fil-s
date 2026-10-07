@@ -1,9 +1,10 @@
 ---
+import AboutCarousel from "../../components/AboutCarousel.astro";
 import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout>
-  <section class="min-h-svh space-y-12 py-24">
+  <section class="min-h-svh space-y-12 py-24 overflow-hidden">
     <div class="container mx-auto">
       <div class="grid grid-cols-12 gap-5">
         <div class="md:col-span-6 text-neutral-50">
@@ -23,13 +24,16 @@ import Layout from "../../layouts/Layout.astro";
           </p>
         </div>
         <div class="md:col-span-6 text-neutral-50">
-          <div
-            class="w-full aspect-4/3 bg-neutral-200 rounded-md"
+          <img
+            src="https://res.cloudinary.com/dkgnaegp9/image/upload/v1791391633/image_ed5mn8.png"
+            class="w-full aspect-4/3 bg-neutral-200 rounded-md object-cover"
             data-nosotros-image
-          >
-          </div>
+          />
         </div>
       </div>
+    </div>
+    <div data-about-section class="pt-20">
+      <AboutCarousel />
     </div>
   </section>
 </Layout>
@@ -40,8 +44,12 @@ import Layout from "../../layouts/Layout.astro";
   let ctx: gsap.Context | null = null;
 
   document.addEventListener("astro:page-load", () => {
-    const textEls = document.querySelectorAll<HTMLElement>("[data-nosotros-text]");
-    const imageEl = document.querySelector<HTMLElement>("[data-nosotros-image]");
+    const textEls = document.querySelectorAll<HTMLElement>(
+      "[data-nosotros-text]",
+    );
+    const imageEl = document.querySelector<HTMLElement>(
+      "[data-nosotros-image]",
+    );
 
     ctx?.revert();
     ctx = gsap.context(() => {

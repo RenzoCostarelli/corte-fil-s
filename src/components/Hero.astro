@@ -22,12 +22,10 @@
 
 <script>
   import { gsap } from "../lib/gsap";
-  import {
-    init as initExperience,
-    destroy as destroyExperience,
-  } from "../scripts/experience";
+  import { createExperience } from "../scripts/experience";
 
   let ctx: gsap.Context | null = null;
+  const experience = createExperience();
 
   document.addEventListener("astro:page-load", () => {
     const hero = document.querySelector("[data-hero]") as HTMLElement | null;
@@ -73,7 +71,7 @@
     }, hero);
 
     try {
-      initExperience(hero);
+      experience.init(hero, { revealEvent: "hero:animated" });
     } catch (e) {
       console.warn("[Hero] Three.js experience failed to initialize:", e);
     }
@@ -82,6 +80,6 @@
   document.addEventListener("astro:before-swap", () => {
     ctx?.revert();
     ctx = null;
-    destroyExperience();
+    experience.destroy();
   });
 </script>
