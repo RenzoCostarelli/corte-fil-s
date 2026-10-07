@@ -49,6 +49,9 @@ export default defineConfig({
       },
     },
   ],
+  image: {
+    domains: ["images.prismic.io", "corte-films.cdn.prismic.io"],
+  },
   vite: {
     plugins: [tailwindcss()],
   },

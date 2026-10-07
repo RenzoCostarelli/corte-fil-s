@@ -1,13 +1,19 @@
 ---
-import { categories, portfolio } from "../data";
+import { categories } from "../data";
+import type { ProjectDocument } from "../types/prismic";
 import ArrowIcon from "./ui/icons/ArrowIcon.astro";
 import ProjectCard from "./ui/ProjectCard.astro";
 import SectionTitle from "./ui/SectionTitle.astro";
 
-const projects = portfolio.slice(0, 4);
+interface Props {
+  posts?: ProjectDocument[];
+}
+
+const { posts = [] } = Astro.props;
+const projects = posts.slice(0, 4);
 ---
 
-<section class="py-24 space-y-12" data-portfolio-home>
+<section class="py-24 space-y-12 bg-neutral-50" data-portfolio-home>
   <script>
     import { gsap, ScrollTrigger } from "../lib/gsap";
 
@@ -53,13 +59,15 @@ const projects = portfolio.slice(0, 4);
         stagger: 0.05,
       });
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "35% bottom",
-        animation: tl,
-        scrub: true,
-        // markers: true,
-      });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: section,
+          start: "35% bottom",
+          animation: tl,
+          scrub: true,
+          // markers: true,
+        }),
+      );
     });
 
     document.addEventListener("astro:before-swap", () => {
@@ -69,9 +77,9 @@ const projects = portfolio.slice(0, 4);
   </script>
   <div class="px-4 mx-auto">
     <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
-    <div class="flex items-center justify-end gap-3 py-8 px-2" data-categories>
+    <!-- <div class="flex items-center justify-end gap-3 py-8 px-2" data-categories>
       {
-        categories.map((category, index) => (
+        categories.map((category) => (
           <div class="flex items-center gap-3 group" data-category>
             <button class="text-neutral-400 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty transition-colors">
               {category.name}
@@ -80,9 +88,9 @@ const projects = portfolio.slice(0, 4);
           </div>
         ))
       }
-    </div>
+    </div> -->
     <div class="grid grid-cols-2 md:grid-cols-2 gap-1" data-projects>
-      {projects.map((project) => <ProjectCard project={project} from="/" />)}
+      {projects.map((post) => <ProjectCard post={post} from="/" />)}
     </div>
     <div class="w-full py-4 mt-2 text-right font-univers-ex">
       <a

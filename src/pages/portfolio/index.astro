@@ -1,11 +1,14 @@
 ---
-import { categories, portfolio } from "../../data";
+import { categories } from "../../data";
+import { getAllPosts } from "../../lib/prismicio";
 import Layout from "../../layouts/Layout.astro";
 import ProjectCard from "../../components/ui/ProjectCard.astro";
 import SectionTitle from "../../components/ui/SectionTitle.astro";
+
+const posts = await getAllPosts();
 ---
 
-<Layout>
+<Layout title="Portfolio | Corte Films" description="Nuestra selección de proyectos audiovisuales.">
   <section class="min-h-svh space-y-12 py-24" data-portfolio-section>
     <script>
       import { gsap, ScrollTrigger } from "../../lib/gsap";
@@ -135,7 +138,7 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
         }
       </div>
       <div class="grid grid-cols-2 md:grid-cols-2 gap-8 py-8">
-        {portfolio.map((project) => <ProjectCard project={project} />)}
+        {posts.map((post) => <ProjectCard post={post} />)}
       </div>
     </div>
   </section>

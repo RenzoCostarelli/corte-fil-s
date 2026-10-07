@@ -2,3 +2,5 @@
 - [x] Cursor custom
 - [] Responsive, texto
 - [] Clampear tamaño de tarjetas y textos
+- [] Nav con active
+- [] Animaciones footer

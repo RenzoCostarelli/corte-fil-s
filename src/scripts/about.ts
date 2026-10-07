@@ -28,6 +28,8 @@ class ImageTrail {
   private lastMouse = { x: 0, y: 0 };
   private cached = { x: 0, y: 0 };
   private rafId = 0;
+  private isVisible = false;
+  private observer: IntersectionObserver | null = null;
   /** Minimum px the cursor must travel before showing the next image */
   private threshold = 80;
 
@@ -145,9 +147,9 @@ document.addEventListener("astro:page-load", () => {
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      duration: 0.4,
+      duration: 0.6,
       stagger: 0.08,
-      ease: "none",
+      ease: "power2.out",
     });
 
     gsap.set(split.lines, { opacity: 0.15, y: 60, filter: "blur(8px)" });
@@ -155,9 +157,7 @@ document.addEventListener("astro:page-load", () => {
     triggers.push(
       ScrollTrigger.create({
         trigger: paragraph,
-        start: "top bottom",
-        end: "center center",
-        scrub: true,
+        start: "top 80%",
         animation: tl,
       }),
     );

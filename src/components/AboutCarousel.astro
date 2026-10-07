@@ -1,0 +1,24 @@
+---
+import { aboutCarouselSlides } from "../data";
+---
+
+<div class="relative z-90 mt-12 overflow-hidden" data-about-carousel>
+  <div class="flex gap-4" data-carousel-track>
+    <div class="shrink-0 w-[20vw] lg:w-[35vw]" aria-hidden="true"></div>
+    {
+      aboutCarouselSlides.map((slide) => (
+        <div class="shrink-0 w-[70vw] lg:w-[28vw] " data-carousel-slide>
+          <img
+            class="aspect-square w-full bg-yellow-100 rounded-md object-cover"
+            alt={slide.alt}
+            src={slide.url}
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import "../scripts/about-carousel";
+</script>

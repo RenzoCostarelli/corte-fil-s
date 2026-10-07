@@ -1,16 +1,10 @@
 ---
 import Navbar from "./Navbar.astro";
 import Logo from "./ui/Logo.astro";
-
-const url = new URL(Astro.request.url);
-const isHome = url.pathname === "/";
 ---
 
 <div
-  class:list={[
-    "w-full flex items-center justify-between p-4 z-9999 relative -translate-y-full",
-    { "translate-y-0": !isHome },
-  ]}
+  class="w-full flex items-center justify-between p-4 z-9999 relative opacity-0"
   data-topbar
 >
   <a href="/" class="w-24 text-white cursor-pointer">
@@ -28,7 +22,7 @@ const isHome = url.pathname === "/";
     if (!topbar) return;
 
     if (document.getElementById("loader")) {
-      gsap.set(topbar, { yPercent: -500, opacity: 0 });
+      gsap.set(topbar, { yPercent: -100, opacity: 0 });
       window.addEventListener(
         "loader:done",
         () => {

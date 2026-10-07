@@ -4,5 +4,7 @@ export { categories } from "./categories";
 export { icons } from "./icons";
 export { portfolio } from "./portfolio";
 export type { PortfolioItem } from "./portfolio";
+export { aboutCarouselSlides } from "./about-carousel";
+export type { AboutCarouselSlide } from "./about-carousel";
 export { clients } from "./clients";
 export type { Client } from "./clients";
