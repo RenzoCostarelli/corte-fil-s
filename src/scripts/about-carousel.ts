@@ -3,9 +3,7 @@ import { gsap, ScrollTrigger } from "../lib/gsap";
 let trigger: ScrollTrigger | null = null;
 
 document.addEventListener("astro:page-load", () => {
-  const pinTarget = document.querySelector<HTMLElement>(
-    "[data-about-section]",
-  );
+  const pinTarget = document.querySelector<HTMLElement>("[data-about-section]");
   const container = document.querySelector<HTMLElement>(
     "[data-about-carousel]",
   );

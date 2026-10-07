@@ -1,25 +1,33 @@
 ---
 import { clients } from "../data";
-import SectionTitle from "./ui/SectionTitle.astro";
-
-const doubled = [...clients, ...clients];
 ---
 
 <section class="w-full py-16 overflow-hidden select-none" data-clients-marquee>
-  <SectionTitle
-    title="Trabajamos con marcas, artistas e instituciones que buscan diferenciarse y
-      generar impacto real"
-    class="text-white px-4"
-  />
+  <h2
+    class:list={[
+      "font-akira text-2xl md:text-4xl px-4 2xl:max-w-[75svw] text-transparent [-webkit-text-stroke:0.5px_white] md:[-webkit-text-stroke:1px_white] text-pretty",
+    ]}
+    data-section-title
+  >
+    Trabajamos con <span class="text-neutral-50"
+      >marcas, artistas e instituciones</span
+    > que buscan diferenciarse y generar impacto real
+  </h2>
 
   <div data-track class="flex w-max will-change-transform pt-16">
     {
-      doubled.map((client) => (
+      clients.map((client) => (
         <div
           data-item
-          class="shrink-0 flex items-center justify-center border border-white/20 bg-white/5 rounded mr-5 px-8 py-5 min-w-40 text-xs uppercase tracking-widest text-neutral-400 font-medium"
+          data-original
+          class="shrink-0 flex items-center justify-center border mr-5 px-8 py-5 min-w-40"
         >
-          {client.name}
+          <img
+            src={client.logo}
+            alt={client.name}
+            class="max-h-15 w-auto object-contain"
+            loading="lazy"
+          />
         </div>
       ))
     }
@@ -37,14 +45,35 @@ const doubled = [...clients, ...clients];
 
     if (!root || !track) return null;
 
+    // Drop any copies cloned by a previous init (e.g. re-running on the same DOM)
+    track
+      .querySelectorAll<HTMLElement>("[data-item]:not([data-original])")
+      .forEach((el) => el.remove());
+
+    const originalItems = Array.from(
+      track.querySelectorAll<HTMLElement>("[data-item][data-original]"),
+    );
+    const setCount = originalItems.length;
+    const oneSetWidth = track.scrollWidth;
+
+    // Render enough copies so the track always covers at least one
+    // viewport-width past a full set, however wide the screen is —
+    // otherwise the mod-wrap below runs out of clones to show.
+    const copies = Math.max(2, Math.ceil(window.innerWidth / oneSetWidth) + 1);
+
+    for (let i = 1; i < copies; i++) {
+      for (const item of originalItems) {
+        track.appendChild(item.cloneNode(true));
+      }
+    }
+
     const items = Array.from(
       track.querySelectorAll<HTMLElement>("[data-item]"),
     );
-    const half = items.length / 2;
 
     // Measure the width of one full set using bounding rects for accuracy
     const startX = items[0].getBoundingClientRect().left;
-    const midX = items[half].getBoundingClientRect().left;
+    const midX = items[setCount].getBoundingClientRect().left;
     const loopWidth = midX - startX;
 
     const BASE_SPEED = 80; // px/s forward
@@ -91,12 +120,21 @@ const doubled = [...clients, ...clients];
       gsap.set(track, { x });
     };
 
+    let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
+    const onResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => void boot(), 200);
+    };
+
     gsap.ticker.add(tick);
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
 
     return () => {
+      clearTimeout(resizeTimeout);
       gsap.ticker.remove(tick);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
       gsap.set(track, { x: 0 });
     };
   }
