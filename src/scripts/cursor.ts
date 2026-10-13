@@ -1,8 +1,10 @@
 import { gsap } from "../lib/gsap";
 
-export function initCursor() {
+let cleanup: (() => void) | null = null;
+
+function initCursor(): (() => void) | null {
   const cursor = document.getElementById("custom-cursor");
-  if (!cursor) return;
+  if (!cursor) return null;
   const cursorLabel = cursor.querySelector(
     "[data-cursor-label]",
   ) as HTMLElement;
@@ -12,18 +14,10 @@ export function initCursor() {
   const xTo = gsap.quickTo(cursor, "x", { duration: 0.2, ease: "power3" });
   const yTo = gsap.quickTo(cursor, "y", { duration: 0.2, ease: "power3" });
 
-  document.addEventListener("mousemove", (e) => {
+  const onMouseMove = (e: MouseEvent) => {
     xTo(e.clientX);
     yTo(e.clientY);
-  });
-
-  // document.addEventListener("mouseenter", () => {
-  //   gsap.to(cursor, { opacity: 1, duration: 0.3 });
-  // });
-
-  // document.addEventListener("mouseleave", () => {
-  //   gsap.to(cursor, { opacity: 0, duration: 0.3 });
-  // });
+  };
 
   const onEnterLink = () =>
     gsap.to(cursor, { scale: 1, duration: 0.3, ease: "power2.out" });
@@ -57,7 +51,7 @@ export function initCursor() {
   };
 
   function bindLinks() {
-    document.querySelectorAll("a, butto").forEach((el) => {
+    document.querySelectorAll("a, button").forEach((el) => {
       el.addEventListener("mouseenter", onEnterLink);
       el.addEventListener("mouseleave", onLeaveLink);
     });
@@ -71,20 +65,39 @@ export function initCursor() {
   }
 
   function unbindLinks() {
-    (document.querySelectorAll("a, button").forEach((el) => {
+    document.querySelectorAll("a, button").forEach((el) => {
       el.removeEventListener("mouseenter", onEnterLink);
       el.removeEventListener("mouseleave", onLeaveLink);
-    }),
-      document.querySelectorAll("[data-reel]").forEach((el2) => {
-        el2.removeEventListener("mouseenter", onEnterLink);
-        el2.removeEventListener("mouseleave", onLeaveLink);
-      }));
+    });
+    document.querySelectorAll("[data-reel]").forEach((el) => {
+      el.removeEventListener("mouseenter", onEnterVideoLink);
+      el.removeEventListener("mouseleave", onLeaveVideoLink);
+    });
   }
 
+  document.addEventListener("mousemove", onMouseMove);
   bindLinks();
   bindVideoLinks();
 
+  // Links are re-created on every page swap, so rebind on the fresh DOM
+  // and unbind right before it's torn down.
   document.addEventListener("astro:after-swap", bindLinks);
   document.addEventListener("astro:after-swap", bindVideoLinks);
-  document.addEventListener("astro:before-swap", unbindLinks);
+
+  return () => {
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("astro:after-swap", bindLinks);
+    document.removeEventListener("astro:after-swap", bindVideoLinks);
+    unbindLinks();
+  };
 }
+
+document.addEventListener("astro:page-load", () => {
+  cleanup?.();
+  cleanup = initCursor();
+});
+
+document.addEventListener("astro:before-swap", () => {
+  cleanup?.();
+  cleanup = null;
+});

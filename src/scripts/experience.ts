@@ -18,6 +18,10 @@ export interface ExperienceOptions {
 export interface Experience {
   init: (root: HTMLElement, options?: ExperienceOptions) => void;
   destroy: () => void;
+  /** Stop the render loop without disposing WebGL resources (e.g. off-screen). */
+  pause: () => void;
+  /** Resume a render loop previously stopped with pause(). */
+  resume: () => void;
 }
 
 export function createExperience(): Experience {
@@ -225,18 +229,28 @@ export function createExperience(): Experience {
     root.addEventListener("mousemove", onMouseMove);
     window.addEventListener("resize", onResize);
 
-    // Force needsUpdate each frame: requestVideoFrameCallback may not fire until
-    // the video delivers its first frame, so we bypass that race condition.
-    // Guarded by readyState so we don't hand WebGL a video with no decoded
-    // frame yet (throws "texImage2D: no video" while the source is loading).
-    renderer.setAnimationLoop(() => {
-      if (!scene || !camera) return;
-      if (videoTexture && currentVideo && currentVideo.readyState >= 2) {
-        videoTexture.needsUpdate = true;
-      }
-      updateDataTexture();
-      renderer!.render(scene, camera);
-    });
+    renderer.setAnimationLoop(animate);
+  }
+
+  // Force needsUpdate each frame: requestVideoFrameCallback may not fire until
+  // the video delivers its first frame, so we bypass that race condition.
+  // Guarded by readyState so we don't hand WebGL a video with no decoded
+  // frame yet (throws "texImage2D: no video" while the source is loading).
+  function animate() {
+    if (!scene || !camera || !renderer) return;
+    if (videoTexture && currentVideo && currentVideo.readyState >= 2) {
+      videoTexture.needsUpdate = true;
+    }
+    updateDataTexture();
+    renderer.render(scene, camera);
+  }
+
+  function pause() {
+    renderer?.setAnimationLoop(null);
+  }
+
+  function resume() {
+    renderer?.setAnimationLoop(animate);
   }
 
   function destroy() {
@@ -283,5 +297,5 @@ export function createExperience(): Experience {
     mouse.vY = 0;
   }
 
-  return { init, destroy };
+  return { init, destroy, pause, resume };
 }

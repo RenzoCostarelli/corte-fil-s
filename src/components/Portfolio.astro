@@ -1,5 +1,4 @@
 ---
-import { categories } from "../data";
 import type { ProjectDocument } from "../types/prismic";
 import ArrowIcon from "./ui/icons/ArrowIcon.astro";
 import ProjectCard from "./ui/ProjectCard.astro";
@@ -13,94 +12,22 @@ const { posts = [] } = Astro.props;
 const projects = posts.slice(0, 4);
 ---
 
-<section class="py-24 space-y-12 bg-neutral-50" data-portfolio-home>
-  <script>
-    import { gsap, ScrollTrigger } from "../lib/gsap";
+<section class="pb-24 space-y-12 bg-neutral-50" data-portfolio-home>
+  <div class="mx-auto">
+    <SectionTitle
+      title="Nuestros trabajos"
+      class="text-neutral-950 text-center mb-12 px-4"
+    />
 
-    let triggers: ScrollTrigger[] = [];
-
-    document.addEventListener("astro:page-load", () => {
-      const section = document.querySelector("[data-portfolio-home]");
-      if (!section) return;
-
-      const categoryButtons = gsap.utils.toArray<HTMLElement>(
-        "[data-category]",
-        section,
-      );
-      const projectCards = gsap.utils.toArray<HTMLElement>(
-        "[data-project-card]",
-        section,
-      );
-
-      const categoriesTl = gsap
-        .timeline({ paused: true })
-        .from(categoryButtons, {
-          opacity: 0,
-          y: -20,
-          filter: "blur(8px)",
-          stagger: 0.1,
-        });
-
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: "[data-categories]",
-          start: "top 75%",
-          end: "top center",
-          animation: categoriesTl,
-          scrub: true,
-        }),
-      );
-
-      const tl = gsap.timeline({ paused: true }).from(projectCards, {
-        opacity: 0,
-        y: 60,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.05,
-      });
-
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: section,
-          start: "35% bottom",
-          animation: tl,
-          scrub: true,
-          // markers: true,
-        }),
-      );
-    });
-
-    document.addEventListener("astro:before-swap", () => {
-      triggers.forEach((t) => t.kill());
-      triggers = [];
-    });
-  </script>
-  <div class="px-4 mx-auto">
-    <SectionTitle title="PORTFOLIO" class="text-neutral-50" />
-    <!-- <div class="flex items-center justify-end gap-3 py-8 px-2" data-categories>
-      {
-        categories.map((category) => (
-          <div class="flex items-center gap-3 group" data-category>
-            <button class="text-neutral-400 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty transition-colors">
-              {category.name}
-            </button>
-            <div class="w-1 h-1 bg-white group-last:hidden" />
-          </div>
-        ))
-      }
-    </div> -->
-    <div class="grid grid-cols-2 md:grid-cols-2 gap-1" data-projects>
+    <div class="space-y-8" data-projects>
       {projects.map((post) => <ProjectCard post={post} from="/" />)}
     </div>
-    <div class="w-full py-4 mt-2 text-right font-univers-ex">
+    <div class="w-full py-4 mt-4 text-center font-akira">
       <a
-        href="#"
-        class="w-max flex items-center justify-self-end group transition-colors duration-500 text-neutral-500 hover:text-neutral-50"
-        >Ver todos los proyectos <span
-          class="w-6 inline-block group-hover:translate-x-2 transition-transform duration-500 ease-in-out"
-          ><ArrowIcon /></span
-        ></a
-      >
+        href="/portfolio"
+        class="w-max flex items-center font-bolder justify-self-center group text-neutral-50 bg-neutral-950 px-1 hover:px-5 transition-all duration-500"
+        >Ver todos los proyectos
+      </a>
     </div>
   </div>
 </section>

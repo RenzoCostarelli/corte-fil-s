@@ -1,6 +1,6 @@
 ---
 import * as prismic from "@prismicio/client";
-import { getAllPosts } from "../../lib/prismicio";
+import { getAllPosts, prismicImageUrl } from "../../lib/prismicio";
 import type { ProjectDocument } from "../../types/prismic";
 import ArrowIcon from "../../components/ui/icons/ArrowIcon.astro";
 import PrismicRichText from "../../components/ui/PrismicRichText.astro";
@@ -23,6 +23,7 @@ const { post, allPosts } = Astro.props;
 
 const title = prismic.asText(post.data.title);
 const thumbnail = post.data.miniatura?.url;
+const thumbnailImg = prismicImageUrl(thumbnail, 1600);
 const clientName = post.data.client_name;
 const year = post.data.year;
 const category = post.data.category;
@@ -66,10 +67,11 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
           style={`view-transition-name: portfolio-hero-${post.uid}`}
         >
           {
-            thumbnail && (
+            thumbnailImg && (
               <img
-                src={thumbnail}
+                src={thumbnailImg}
                 alt={`${title} thumbnail`}
+                decoding="async"
                 class="w-full h-full object-cover"
               />
             )
@@ -99,8 +101,10 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
             {gallery.map((item) =>
               item.image?.url ? (
                 <img
-                  src={item.image.url}
+                  src={prismicImageUrl(item.image.url, 800)}
                   alt={item.image.alt ?? ""}
+                  loading="lazy"
+                  decoding="async"
                   class="aspect-square w-full object-cover rounded-md"
                 />
               ) : (
@@ -131,8 +135,10 @@ const relatedProjects = [...otherProjects, ...fallbackProjects];
                 >
                   {related.data.miniatura?.url ? (
                     <img
-                      src={related.data.miniatura.url}
+                      src={prismicImageUrl(related.data.miniatura.url, 600)}
                       alt={prismic.asText(related.data.title)}
+                      loading="lazy"
+                      decoding="async"
                       class="w-full h-full object-cover"
                     />
                   ) : (

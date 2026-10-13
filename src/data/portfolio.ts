@@ -19,7 +19,7 @@ export const portfolio: PortfolioItem[] = [
     year: 2025,
     roles: ["Guión", "Dirección", "Edición"],
     thumbnail:
-      "https://res.cloudinary.com/dkgnaegp9/image/upload/v1780081150/Criolani_rpy1ga.png",
+      "https://res.cloudinary.com/dkgnaegp9/image/upload/f_auto,q_auto,w_1200/v1780081150/Criolani_rpy1ga.png",
     description:
       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis aliquam. Vitae perspiciatis ullam culpa, cumque beatae officiis.",
     longDescription:
@@ -33,7 +33,7 @@ export const portfolio: PortfolioItem[] = [
     year: 2025,
     roles: ["Dirección de fotografía", "Edición"],
     thumbnail:
-      "https://res.cloudinary.com/dkgnaegp9/image/upload/v1780081150/Captura_l1yigu.png",
+      "https://res.cloudinary.com/dkgnaegp9/image/upload/f_auto,q_auto,w_1200/v1780081150/Captura_l1yigu.png",
     description:
       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi totam facilis necessitatibus nostrum, fuga earum, nulla ipsam nam provident reiciendis aliquam.",
     longDescription:

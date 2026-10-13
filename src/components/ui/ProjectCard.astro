@@ -1,5 +1,6 @@
 ---
 import * as prismic from "@prismicio/client";
+import { prismicImageUrl } from "../../lib/prismicio";
 import type { ProjectDocument } from "../../types/prismic";
 import ArrowIcon from "./icons/ArrowIcon.astro";
 
@@ -14,52 +15,70 @@ const href = from
   ? `/portfolio/${slug}?from=${encodeURIComponent(from)}`
   : `/portfolio/${slug}`;
 const title = prismic.asText(post.data.title);
-const thumbnail = post.data.miniatura?.url;
+const thumbnail = prismicImageUrl(post.data.miniatura?.url, 800);
 const clientName = post.data.client_name;
-const category = post.data.category;
 ---
 
 <a
   href={href}
   data-project-card
-  data-category-item={category}
-  class="rounded-sm overflow-hidden"
+  class="rounded-sm overflow-hidden grid md:grid-cols-7 items-center group"
 >
+  <div class="opacity-0 -translate-x-10 pl-4 md:col-span-2" data-card-info>
+    {
+      clientName && (
+        <div class="text-xs uppercase font-semibold tracking-wider flex gap-2 items-center">
+          {clientName}
+        </div>
+      )
+    }
+    <div class="text-xl font-akira tracking-wide leading-none">
+      {title}
+    </div>
+  </div>
   <div
-    class="bg-neutral-800 h-128 text-white gap-2 relative group overflow-hidden"
+    class="aspect-8/5 bg-neutral-950 relative overflow-hidden px-15 py-8 md:col-span-3"
     style={`view-transition-name: portfolio-hero-${slug}`}
   >
+    <div class="absolute inset-0 overflow-hidden" data-thumbnail-background>
+      <div
+        class="absolute inset-y-0 left-0 w-[1rem] bg-neutral-50"
+        data-thumbnail-curtain
+      >
+      </div>
+      <div
+        class="absolute inset-y-0 right-0 w-[1rem] bg-neutral-50"
+        data-thumbnail-curtain
+      >
+      </div>
+    </div>
     {
       thumbnail && (
         <img
           src={thumbnail}
           alt={title}
-          class="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          decoding="async"
+          class="relative h-full w-full object-cover aspect-video mx-auto "
         />
       )
     }
+  </div>
+  <div
+    class="text-right pl-24 opacity-0 translate-x-10 pr-4 md:col-span-2"
+    data-card-info
+  >
     <div
-      class="absolute left-3 bottom-3 w-max bg-white/2 backdrop-blur-sm px-3 pb-2 pt-12 max-w-[80%]"
+      class="flex items-center justify-between gap-1 transition-all duration-500"
     >
-      {
-        clientName && (
-          <div class="text-xs uppercase font-semibold tracking-wider flex gap-2 items-center">
-            <div class="h-1 w-1 bg-white" />
-            {clientName}
-          </div>
-        )
-      }
-      <div class="text-lg font-akira tracking-wide">{title}</div>
-    </div>
-    <div class="absolute bottom-3 right-3">
-      <div
-        class="px-4 py-2 flex items-center gap-1 rounded-full backdrop-blur-sm translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 bg-white/2 group-hover:bg-white/4 transition-all duration-500"
-      >
-        <div class="font-semibold">Ver más</div>
-        <div class="w-8 h-8">
-          <ArrowIcon />
-        </div>
+      <div class="w-25 h-25" data-card-arrow>
+        <ArrowIcon />
       </div>
+      <div class="font-bold text-2xl">Ver</div>
     </div>
   </div>
 </a>
+
+<script>
+  import "../../scripts/project-card";
+</script>

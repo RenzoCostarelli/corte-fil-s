@@ -12,6 +12,8 @@ import { aboutCarouselSlides } from "../data";
             class="aspect-square w-full bg-yellow-100 rounded-md object-cover"
             alt={slide.alt}
             src={slide.url}
+            loading="lazy"
+            decoding="async"
           />
         </div>
       ))

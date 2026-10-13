@@ -33,6 +33,7 @@
   import { createExperience } from "../scripts/experience";
 
   let ctx: gsap.Context | null = null;
+  let observer: IntersectionObserver | null = null;
   const experience = createExperience();
 
   document.addEventListener("astro:page-load", () => {
@@ -56,6 +57,20 @@
       console.warn("[Reel] Three.js experience failed to initialize:", e);
     }
 
+    // Stop rendering while the reel is scrolled off-screen — the WebGL loop
+    // runs every frame and shouldn't compete with scroll once it's not visible.
+    observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          experience.resume();
+        } else {
+          experience.pause();
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(reel);
+
     ctx = gsap.context(() => {
       gsap.fromTo(
         reel,
@@ -77,6 +92,8 @@
   document.addEventListener("astro:before-swap", () => {
     ctx?.revert();
     ctx = null;
+    observer?.disconnect();
+    observer = null;
     experience.destroy();
   });
 </script>
