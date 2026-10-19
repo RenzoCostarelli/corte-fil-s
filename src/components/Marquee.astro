@@ -117,12 +117,5 @@ const doubled = [...categories, ...categories];
     destroy = initMarquee();
   }
 
-  document.addEventListener("astro:page-load", () => {
-    void boot();
-  });
-
-  document.addEventListener("astro:before-swap", () => {
-    destroy?.();
-    destroy = null;
-  });
+  void boot();
 </script>

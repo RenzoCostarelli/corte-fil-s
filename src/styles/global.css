@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@view-transition {
+  navigation: auto;
+}
+
 @theme inline {
   --font-akira: var(--font-akira);
   --font-univers-ex: var(--font-univers-ex);

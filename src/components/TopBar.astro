@@ -7,7 +7,11 @@ import Logo from "./ui/Logo.astro";
   class="w-full flex items-center justify-between p-4 z-9999 relative opacity-0"
   data-topbar
 >
-  <a href="/" class="w-24 text-white cursor-pointer">
+  <a
+    href="/"
+    class="w-24 text-white cursor-pointer opacity-0 translate-y-5"
+    data-topbar-logo
+  >
     <Logo />
   </a>
   <Navbar />
@@ -15,28 +19,76 @@ import Logo from "./ui/Logo.astro";
 <script>
   import { gsap } from "../lib/gsap";
 
-  document.addEventListener("astro:page-load", () => {
-    const topbar = document.querySelector(
-      "[data-topbar]",
-    ) as HTMLElement | null;
-    if (!topbar) return;
+  const topbar = document.querySelector<HTMLElement>("[data-topbar]");
 
-    if (document.getElementById("loader")) {
-      gsap.set(topbar, { yPercent: -100, opacity: 0 });
-      window.addEventListener(
-        "loader:done",
-        () => {
-          gsap.to(topbar, {
-            yPercent: 0,
-            opacity: 1,
-            duration: 1,
-            ease: "power4.out",
-          });
+  if (topbar) {
+    gsap.set(topbar, { yPercent: 0, opacity: 1 });
+
+    const logo = topbar.querySelector<HTMLElement>("[data-topbar-logo]");
+    const navLinks = gsap.utils.toArray<HTMLElement>("[data-nav-link]", topbar);
+    const navSocials = gsap.utils.toArray<HTMLElement>(
+      "[data-nav-social]",
+      topbar,
+    );
+    const menuButton = topbar.querySelector<HTMLElement>("[data-menu-button]");
+
+    const introTargets = [
+      logo,
+      ...navLinks,
+      ...navSocials,
+      menuButton,
+    ].filter((el): el is HTMLElement => Boolean(el));
+    gsap.set(introTargets, { opacity: 0 });
+
+    function animateTopBarIn() {
+      const tl = gsap.timeline();
+
+      if (logo) {
+        tl.to(logo, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      }
+
+      tl.to(
+        navLinks,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power2.out",
         },
-        { once: true },
+        logo ? "-=0.4" : 0,
+      ).to(
+        navSocials,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out",
+        },
+        "-=0.4",
       );
-    } else {
-      gsap.set(topbar, { yPercent: 0, opacity: 1 });
+
+      if (menuButton) {
+        tl.to(
+          menuButton,
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+          "<",
+        );
+      }
     }
-  });
+
+    if (document.querySelector("[data-hero]")) {
+      window.addEventListener("hero:title-reveal", animateTopBarIn, {
+        once: true,
+      });
+    } else {
+      animateTopBarIn();
+    }
+  }
 </script>

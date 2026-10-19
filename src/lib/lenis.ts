@@ -14,17 +14,5 @@ export function initLenis() {
 
   requestAnimationFrame(raf);
 
-  if (document.getElementById("loader")) {
-    lenis.stop();
-  }
-
-  window.addEventListener("loader:done", () => {
-    lenis.start();
-  });
-
-  document.addEventListener("astro:after-swap", () => {
-    lenis.scrollTo(0, { immediate: true });
-  });
-
   return lenis;
 }

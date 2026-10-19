@@ -17,11 +17,13 @@ const href = from
 const title = prismic.asText(post.data.title);
 const thumbnail = prismicImageUrl(post.data.miniatura?.url, 800);
 const clientName = post.data.client_name;
+const category = post.data.category;
 ---
 
 <a
   href={href}
   data-project-card
+  data-category-item={category}
   class="rounded-sm overflow-hidden grid md:grid-cols-7 items-center group"
 >
   <div class="opacity-0 -translate-x-10 pl-4 md:col-span-2" data-card-info>

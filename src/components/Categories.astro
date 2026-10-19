@@ -1,15 +1,18 @@
 ---
 import { categories } from "../data";
-import ArrowIcon from "./ui/icons/ArrowIcon.astro";
-import SectionTitle from "./ui/SectionTitle.astro";
 ---
 
 <section class="bg-neutral-50 text-neutral-900 py-24" data-categories>
-  <h2 class="md:text-6xl font-bold px-5 font-akira md:px-10 pb-12">Hacemos</h2>
+  <h2
+    class="md:text-6xl font-bold px-5 font-akira md:px-10 pb-12"
+    data-categories-title
+  >
+    Hacemos
+  </h2>
   {
     categories.map((category, index) => (
       <div
-        class="relative border-t border-neutral-900/10 px-5 md:px-10 py-8 md:py-8  hover:text-neutral-200 transition-colors group"
+        class="relative border-t border-neutral-900/10 px-5 md:px-10 py-8 md:py-8 hover:text-neutral-200 transition-colors group"
         data-category-row
       >
         <div class="absolute inset-0 h-full w-full bg-neutral-800 scale-y-0 transition-transform duration-400 group-hover:scale-y-100 origin-bottom" />
@@ -29,3 +32,7 @@ import SectionTitle from "./ui/SectionTitle.astro";
     ))
   }
 </section>
+
+<script>
+  import "../scripts/categories";
+</script>

@@ -10,7 +10,10 @@ import Logo from "./ui/Logo.astro";
     <ul class="flex items-center gap-8">
       {
         navItems.map((item) => (
-          <li class="font-univers-ex text-sm uppercase tracking-wider relative group w-max text-white">
+          <li
+            class="font-univers-ex text-sm uppercase tracking-wider relative group w-max text-white opacity-0 translate-y-5"
+            data-nav-link
+          >
             <a href={item.href}>{item.label}</a>
             <div class="absolute h-px bg-white w-full bottom-0 scale-x-0 transition-transform duration-450 origin-left group-hover:scale-x-100" />
           </li>
@@ -24,10 +27,11 @@ import Logo from "./ui/Logo.astro";
           return (
             <a
               href={item.url}
-              class="text-white w-5 inline-block hover:scale-105 transition-transform duration-300"
+              class="text-white w-5 inline-block hover:scale-105 transition-transform duration-300 opacity-0 translate-y-5"
               target="_blank"
               rel="noopener noreferrer"
               aria-label={item.name}
+              data-nav-social
             >
               <Icon />
             </a>
@@ -41,7 +45,7 @@ import Logo from "./ui/Logo.astro";
   <div class="md:hidden">
     <button
       type="button"
-      class="w-20 space-y-2 group cursor-pointer"
+      class="w-20 space-y-2 group cursor-pointer opacity-0 translate-y-5"
       data-menu-button
     >
       <div
@@ -118,67 +122,54 @@ import Logo from "./ui/Logo.astro";
   </div>
 
   <script>
-    function setup() {
-      const menuButton = document.querySelector("[data-menu-button]");
-      const navbar = document.querySelector("[data-navbar]");
-      const navigation = document.querySelector("[data-navigation]");
-      const closeButton = document.querySelector("[data-close-button]");
+    const menuButton = document.querySelector("[data-menu-button]");
+    const navbar = document.querySelector("[data-navbar]");
+    const navigation = document.querySelector("[data-navigation]");
+    const closeButton = document.querySelector("[data-close-button]");
 
-      function lockScroll() {
-        const scrollbarWidth =
-          window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.overflow = "hidden";
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      }
+    function lockScroll() {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
 
-      function unlockScroll() {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-      }
+    function unlockScroll() {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
 
-      function closeNav() {
-        navigation?.classList.add("translate-x-full");
-        navigation?.addEventListener(
-          "transitionend",
-          () => {
-            navbar?.classList.add("hidden");
-            unlockScroll();
-          },
-          { once: true },
-        );
-      }
-
-      function onNavbarClick(e: Event) {
-        if (e.target === navbar) closeNav();
-      }
-
-      function onMenuButtonClick() {
-        const isOpen = !navbar?.classList.contains("hidden");
-        if (isOpen) {
-          closeNav();
-        } else {
-          navbar?.classList.remove("hidden");
-          lockScroll();
-          requestAnimationFrame(() => {
-            navigation?.classList.remove("translate-x-full");
-          });
-        }
-      }
-
-      navbar?.addEventListener("click", onNavbarClick);
-      menuButton?.addEventListener("click", onMenuButtonClick);
-      closeButton?.addEventListener("click", onMenuButtonClick);
-
-      document.addEventListener(
-        "astro:before-swap",
+    function closeNav() {
+      navigation?.classList.add("translate-x-full");
+      navigation?.addEventListener(
+        "transitionend",
         () => {
-          navbar?.removeEventListener("click", onNavbarClick);
-          menuButton?.removeEventListener("click", onMenuButtonClick);
+          navbar?.classList.add("hidden");
+          unlockScroll();
         },
         { once: true },
       );
     }
 
-    document.addEventListener("astro:page-load", setup);
+    function onNavbarClick(e: Event) {
+      if (e.target === navbar) closeNav();
+    }
+
+    function onMenuButtonClick() {
+      const isOpen = !navbar?.classList.contains("hidden");
+      if (isOpen) {
+        closeNav();
+      } else {
+        navbar?.classList.remove("hidden");
+        lockScroll();
+        requestAnimationFrame(() => {
+          navigation?.classList.remove("translate-x-full");
+        });
+      }
+    }
+
+    navbar?.addEventListener("click", onNavbarClick);
+    menuButton?.addEventListener("click", onMenuButtonClick);
+    closeButton?.addEventListener("click", onMenuButtonClick);
   </script>
 </div>

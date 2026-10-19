@@ -145,9 +145,5 @@ import { clients } from "../data";
     cleanup = initClientsMarquee();
   }
 
-  document.addEventListener("astro:page-load", () => void boot());
-  document.addEventListener("astro:before-swap", () => {
-    cleanup?.();
-    cleanup = null;
-  });
+  void boot();
 </script>

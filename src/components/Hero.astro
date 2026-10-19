@@ -24,79 +24,62 @@
   import { gsap } from "../lib/gsap";
   import { createExperience } from "../scripts/experience";
 
-  let ctx: gsap.Context | null = null;
-  let observer: IntersectionObserver | null = null;
   const experience = createExperience();
 
-  document.addEventListener("astro:page-load", () => {
-    const hero = document.querySelector("[data-hero]") as HTMLElement | null;
-    if (!hero) return;
+  const hero = document.querySelector("[data-hero]") as HTMLElement | null;
 
+  if (hero) {
     const video = hero.querySelector("[data-video]") as HTMLElement | null;
-    if (!video) return;
 
-    const heroVideo = hero.querySelector(
-      "[data-hero-video]",
-    ) as HTMLVideoElement | null;
-    if (heroVideo) {
-      heroVideo.load();
-      heroVideo.play().catch(() => {});
-    }
+    if (video) {
+      const heroVideo = hero.querySelector(
+        "[data-hero-video]",
+      ) as HTMLVideoElement | null;
+      if (heroVideo) {
+        heroVideo.load();
+        heroVideo.play().catch(() => {});
+      }
 
-    ctx?.revert();
-
-    ctx = gsap.context(() => {
       gsap.set(video, { opacity: 0, yPercent: 50, scale: 0.75 });
 
-      function animateHeroIn() {
-        gsap
-          .timeline({
-            onComplete: () =>
-              window.dispatchEvent(new CustomEvent("hero:animated")),
-          })
-          .to(video, {
-            opacity: 1,
-            yPercent: 0,
-            duration: 1.25,
-            ease: "power2.out",
-            delay: 0.5,
-          })
-          .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=1");
+      gsap
+        .timeline({
+          onComplete: () =>
+            window.dispatchEvent(new CustomEvent("hero:animated")),
+        })
+        .to(video, {
+          opacity: 1,
+          yPercent: 0,
+          duration: 1.25,
+          ease: "power2.out",
+          delay: 0.5,
+        })
+        .to(video, { scale: 1, duration: 1.25, ease: "power2.out" }, "-=1")
+        .call(
+          () => window.dispatchEvent(new CustomEvent("hero:title-reveal")),
+          [],
+          "-=0.5",
+        );
+
+      try {
+        experience.init(hero, { revealEvent: "hero:animated" });
+      } catch (e) {
+        console.warn("[Hero] Three.js experience failed to initialize:", e);
       }
 
-      if ((window as any).__loaderDone) {
-        animateHeroIn();
-      } else {
-        window.addEventListener("loader:done", animateHeroIn, { once: true });
-      }
-    }, hero);
-
-    try {
-      experience.init(hero, { revealEvent: "hero:animated" });
-    } catch (e) {
-      console.warn("[Hero] Three.js experience failed to initialize:", e);
+      // Stop rendering while the hero is scrolled off-screen — the WebGL loop
+      // runs every frame and shouldn't compete with scroll once it's not visible.
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            experience.resume();
+          } else {
+            experience.pause();
+          }
+        },
+        { threshold: 0 },
+      );
+      observer.observe(hero);
     }
-
-    // Stop rendering while the hero is scrolled off-screen — the WebGL loop
-    // runs every frame and shouldn't compete with scroll once it's not visible.
-    observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          experience.resume();
-        } else {
-          experience.pause();
-        }
-      },
-      { threshold: 0 },
-    );
-    observer.observe(hero);
-  });
-
-  document.addEventListener("astro:before-swap", () => {
-    ctx?.revert();
-    ctx = null;
-    observer?.disconnect();
-    observer = null;
-    experience.destroy();
-  });
+  }
 </script>

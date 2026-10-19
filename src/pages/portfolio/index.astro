@@ -8,18 +8,22 @@ import SectionTitle from "../../components/ui/SectionTitle.astro";
 const posts = await getAllPosts();
 ---
 
-<Layout title="Portfolio | Corte Films" description="Nuestra selección de proyectos audiovisuales.">
-  <section class="min-h-svh space-y-12 py-24" data-portfolio-section>
+<Layout
+  title="Portfolio | Corte Films"
+  description="Nuestra selección de proyectos audiovisuales."
+>
+  <section
+    class="min-h-svh space-y-12 py-12 bg-neutral-50"
+    data-portfolio-section
+  >
     <script>
       import { gsap, ScrollTrigger } from "../../lib/gsap";
 
-      let categoriesTrigger: ScrollTrigger | null = null;
       const cardTriggers = new Map<HTMLElement, ScrollTrigger>();
 
-      document.addEventListener("astro:page-load", () => {
-        const section = document.querySelector("[data-portfolio-section]");
-        if (!section) return;
+      const section = document.querySelector("[data-portfolio-section]");
 
+      if (section) {
         const filterButtons = gsap.utils.toArray<HTMLElement>(
           "[data-filter-btn]",
           section,
@@ -39,7 +43,7 @@ const posts = await getAllPosts();
             ease: "power2.out",
           });
 
-        categoriesTrigger = ScrollTrigger.create({
+        ScrollTrigger.create({
           trigger: "[data-categories]",
           start: "top 75%",
           end: "top center",
@@ -70,7 +74,7 @@ const posts = await getAllPosts();
         function applyFilter(filter: string) {
           filterButtons.forEach((btn: HTMLElement) => {
             const isActive = btn.dataset.filterBtn === filter;
-            btn.classList.toggle("text-neutral-50", isActive);
+            btn.classList.toggle("text-neutral-950", isActive);
             btn.classList.toggle("text-neutral-400", !isActive);
           });
 
@@ -102,18 +106,11 @@ const posts = await getAllPosts();
         });
 
         applyFilter("Todos");
-      });
-
-      document.addEventListener("astro:before-swap", () => {
-        categoriesTrigger?.kill();
-        categoriesTrigger = null;
-        cardTriggers.forEach((t) => t.kill());
-        cardTriggers.clear();
-      });
+      }
     </script>
-    <div class="container px-4 mx-auto">
-      <h1 class="font-akira text-5xl text-neutral-50">Portfolio</h1>
-      <p class="font-univers-ex text-2xl text-pretty text-neutral-50">
+    <div class="px-4 mx-auto">
+      <h1 class="font-akira text-5xl text-neutral-950">Portfolio</h1>
+      <p class="font-univers-ex text-2xl text-pretty text-neutral-950">
         Nuestra selección de proyectos
       </p>
       <div
@@ -121,7 +118,7 @@ const posts = await getAllPosts();
         data-categories
       >
         <button
-          class="text-neutral-50 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider"
+          class="text-neutral-950 cursor-pointer hover:text-neutral-950 text-xl font-univers-ex tracking-wider"
           data-filter-btn="Todos"
         >
           Todos
@@ -129,7 +126,7 @@ const posts = await getAllPosts();
         {
           categories.map((category) => (
             <button
-              class="text-neutral-400 cursor-pointer hover:text-neutral-50 text-xl font-univers-ex tracking-wider text-pretty"
+              class="text-neutral-400 cursor-pointer hover:text-neutral-950 text-xl font-univers-ex tracking-wider text-pretty"
               data-filter-btn={category.name}
             >
               {category.name}
@@ -137,8 +134,8 @@ const posts = await getAllPosts();
           ))
         }
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-2 gap-8 py-8">
-        {posts.map((post) => <ProjectCard post={post} />)}
+      <div class="space-y-8 py-8" data-projects>
+        {posts.map((post) => <ProjectCard post={post} from="/portfolio" />)}
       </div>
     </div>
   </section>

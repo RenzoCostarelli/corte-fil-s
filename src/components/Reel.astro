@@ -2,18 +2,18 @@
 
 ---
 
-<section class="pt-12 px-4" data-reel-section>
+<section class="pt-12" data-reel-section>
   <div class="mx-auto">
-    <div class="pb-6 pt-8">
+    <div class="pt-8">
       <div
-        class="bg-neutral-700 w-full md:h-[90svh] rounded-md aspect-video mx-auto"
+        class="bg-neutral-700 w-full md:h-[90svh] overflow-hidden aspect-video mx-auto"
         data-reel
         data-video
         data-link
       >
         <video
           src="https://res.cloudinary.com/rlebuswv/video/upload/f_auto,q_auto,w_1920/v1790868764/comprimido_prueba.mp4"
-          class="w-full h-full object-cover shadow-md rounded-md overflow-hidden"
+          class="w-full h-full object-cover shadow-md"
           crossorigin="anonymous"
           autoplay
           loop
@@ -29,20 +29,17 @@
 </section>
 
 <script>
-  import { gsap, ScrollTrigger } from "../lib/gsap";
+  import { gsap } from "../lib/gsap";
   import { createExperience } from "../scripts/experience";
 
-  let ctx: gsap.Context | null = null;
-  let observer: IntersectionObserver | null = null;
   const experience = createExperience();
 
-  document.addEventListener("astro:page-load", () => {
-    const reel = document.querySelector("[data-reel]") as HTMLElement | null;
-    const section = document.querySelector(
-      "[data-reel-section]",
-    ) as HTMLElement | null;
-    if (!reel || !section) return;
+  const reel = document.querySelector("[data-reel]") as HTMLElement | null;
+  const section = document.querySelector(
+    "[data-reel-section]",
+  ) as HTMLElement | null;
 
+  if (reel && section) {
     const reelVideo = reel.querySelector(
       "[data-hero-video]",
     ) as HTMLVideoElement | null;
@@ -59,7 +56,7 @@
 
     // Stop rendering while the reel is scrolled off-screen — the WebGL loop
     // runs every frame and shouldn't compete with scroll once it's not visible.
-    observer = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           experience.resume();
@@ -71,29 +68,20 @@
     );
     observer.observe(reel);
 
-    ctx = gsap.context(() => {
-      gsap.fromTo(
-        reel,
-        { scale: 0.75 },
-        {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "center center",
-            scrub: true,
-          },
+    gsap.fromTo(
+      reel,
+      { scale: 0.75, borderRadius: "6px" },
+      {
+        scale: 1,
+        borderRadius: "0px",
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "center center",
+          scrub: true,
         },
-      );
-    });
-  });
-
-  document.addEventListener("astro:before-swap", () => {
-    ctx?.revert();
-    ctx = null;
-    observer?.disconnect();
-    observer = null;
-    experience.destroy();
-  });
+      },
+    );
+  }
 </script>

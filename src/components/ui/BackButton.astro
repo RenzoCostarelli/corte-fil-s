@@ -22,10 +22,9 @@ const { href = "/" } = Astro.props;
 </a>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
-    const btn = document.querySelector<HTMLAnchorElement>("[data-back-btn]");
-    if (!btn) return;
+  const btn = document.querySelector<HTMLAnchorElement>("[data-back-btn]");
+  if (btn) {
     const from = new URLSearchParams(window.location.search).get("from");
     if (from) btn.href = from;
-  });
+  }
 </script>

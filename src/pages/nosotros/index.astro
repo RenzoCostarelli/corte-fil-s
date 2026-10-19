@@ -42,51 +42,39 @@ import Layout from "../../layouts/Layout.astro";
 <script>
   import { gsap, SplitText } from "../../lib/gsap";
 
-  let ctx: gsap.Context | null = null;
+  const textEls = document.querySelectorAll<HTMLElement>(
+    "[data-nosotros-text]",
+  );
+  const imageEl = document.querySelector<HTMLElement>(
+    "[data-nosotros-image]",
+  );
 
-  document.addEventListener("astro:page-load", () => {
-    const textEls = document.querySelectorAll<HTMLElement>(
-      "[data-nosotros-text]",
+  const tl = gsap.timeline({ delay: 0.2 });
+
+  textEls.forEach((el) => {
+    const split = new SplitText(el, { type: "lines" });
+    gsap.set(split.lines, { opacity: 0, y: 40, filter: "blur(8px)" });
+
+    tl.to(
+      split.lines,
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.6,
+        stagger: 0.06,
+        ease: "power2.out",
+      },
+      "<0.1",
     );
-    const imageEl = document.querySelector<HTMLElement>(
-      "[data-nosotros-image]",
-    );
-
-    ctx?.revert();
-    ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.2 });
-
-      textEls.forEach((el) => {
-        const split = new SplitText(el, { type: "lines" });
-        gsap.set(split.lines, { opacity: 0, y: 40, filter: "blur(8px)" });
-
-        tl.to(
-          split.lines,
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.6,
-            stagger: 0.06,
-            ease: "power2.out",
-          },
-          "<0.1",
-        );
-      });
-
-      if (imageEl) {
-        gsap.set(imageEl, { opacity: 0, y: 40 });
-        tl.to(
-          imageEl,
-          { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
-          "<0.2",
-        );
-      }
-    });
   });
 
-  document.addEventListener("astro:before-swap", () => {
-    ctx?.revert();
-    ctx = null;
-  });
+  if (imageEl) {
+    gsap.set(imageEl, { opacity: 0, y: 40 });
+    tl.to(
+      imageEl,
+      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+      "<0.2",
+    );
+  }
 </script>
